@@ -1,0 +1,6 @@
+# Ensure -al is always used
+alias ls='ls -al --color=always'
+
+# Dont use vim by mistake
+alias vim='nvim'
+alias vi='nvim'
