@@ -60,7 +60,3 @@ vim.o.cursorline = true
 
 -- use all colors in terminal
 vim.o.termguicolors = true
-
--- set undo directory
-vim.o.undodir = "~/.config/nvim/undodir"
-vim.o.undofile = true

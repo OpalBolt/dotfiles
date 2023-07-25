@@ -19,6 +19,8 @@
 # Install oneoff apps
 curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
 
+#testtest
+
 # set up zplug
 mkdir -p /usr/share/zsh/scripts/zplug
 export ZPLUG_HOME=/usr/share/zsh/scripts/zplug/
