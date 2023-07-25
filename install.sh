@@ -1,10 +1,3 @@
-# Install nix, package manager/installer
-#sh <(curl -L https://nixos.org/nix/install) --no-daemon
-
-# Source nix (Sourcing is running the .sh file)
-#. /home/mads/.nix-profile/etc/profile.d/nix.sh
-
-
 
 # Install packages
 #nix-env -iA \
@@ -23,17 +16,13 @@
 #	nixpkgs.zig \
 #	nixpkgs.fd
 
+# Install oneoff apps
+curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
+
 # set up zplug
 mkdir -p /usr/share/zsh/scripts/zplug
 export ZPLUG_HOME=/usr/share/zsh/scripts/zplug/
 git clone https://github.com/zplug/zplug $ZPLUG_HOME
-
-# Make Antigen folder path
-#mkdir -p /usr/share/zsh/share
-
-# Install antigen
-#curl -L git.io/antigen > antigen.zsh
-#mv antigen.zsh /usr/share/zsh/share/antigen.zsh
 
 # Add zsh to valid login shells
 command -v zsh | sudo tee -a /etc/shells
@@ -46,7 +35,3 @@ mkdir ~/.config
 
 # Create nvim folders
 mkdir -p ~/.config/nvim/lua
-
-# Install nvim package manager
-git clone --depth 1 https://github.com/wbthomason/packer.nvim\
- ~/.local/share/nvim/site/pack/packer/start/packer.nvim
