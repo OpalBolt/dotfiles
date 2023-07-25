@@ -1,6 +1,11 @@
 # Ensure -al is always used
-alias ls='ls -al --color=always'
+alias ls='lsd-al --color=always'
 
 # Dont use vim by mistake
 alias vim='nvim'
 alias vi='nvim'
+
+# copy paste functionlaity
+alias c='xclip'
+alias v='xclip -o'
+alias cx='xclip -selection clipboard'
