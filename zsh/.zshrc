@@ -6,7 +6,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Source zplug
-source ~/.zplug/init.zsh
+source /usr/share/zsh/scripts/zplug/
 
 # Use oh-my-zsh plugins
 zplug "lib/*", from:oh-my-zsh

@@ -1,34 +1,39 @@
 # Install nix, package manager/installer
-sh <(curl -L https://nixos.org/nix/install) --no-daemon
+#sh <(curl -L https://nixos.org/nix/install) --no-daemon
 
 # Source nix (Sourcing is running the .sh file)
-. /home/mads/.nix-profile/etc/profile.d/nix.sh
+#. /home/mads/.nix-profile/etc/profile.d/nix.sh
 
 
 
 # Install packages
-nix-env -iA \
-	nixpkgs.zsh \
-	nixpkgs.git \
-	nixpkgs.neovim \
-	nixpkgs.tmux \
-	nixpkgs.stow \
-	nixpkgs.fzf \
-	nixpkgs.ripgrep \
-	nixpkgs.bat \
-	nixpkgs.direnv \
-	nixpkgs.zoxide \
-	nixpkgs.starship \
-	nixpkgs.lsd \
-	nixpkgs.zig \
-	nixpkgs.fd
+#nix-env -iA \
+#	nixpkgs.zsh \
+#	nixpkgs.git \
+#	nixpkgs.neovim \
+#	nixpkgs.tmux \
+#	nixpkgs.stow \
+#	nixpkgs.fzf \
+#	nixpkgs.ripgrep \
+#	nixpkgs.bat \
+#	nixpkgs.direnv \
+#	nixpkgs.zoxide \
+#	nixpkgs.starship \
+#	nixpkgs.lsd \
+#	nixpkgs.zig \
+#	nixpkgs.fd
+
+# set up zplug
+mkdir -p /usr/share/zsh/scripts/zplug
+export ZPLUG_HOME=/usr/share/zsh/scripts/zplug/
+git clone https://github.com/zplug/zplug $ZPLUG_HOME
 
 # Make Antigen folder path
-mkdir -p /usr/share/zsh/share
+#mkdir -p /usr/share/zsh/share
 
 # Install antigen
-curl -L git.io/antigen > antigen.zsh
-mv antigen.zsh /usr/share/zsh/share/antigen.zsh
+#curl -L git.io/antigen > antigen.zsh
+#mv antigen.zsh /usr/share/zsh/share/antigen.zsh
 
 # Add zsh to valid login shells
 command -v zsh | sudo tee -a /etc/shells
