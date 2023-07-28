@@ -25,6 +25,7 @@ zplug "plugins/docker-compose", from:oh-my-zsh
 zplug "zsh-users/zsh-autosuggestions", from:github, as:plugin
 zplug "zsh-users/zsh-syntax-highlighting", from:github, as:plugin, defer:2
 zplug "romkatv/powerlevel10k", as:theme, depth:1
+zplug "MichaelAquilina/zsh-autoswitch-virtualenv", from:github, as:plugin
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
@@ -41,6 +42,16 @@ zplug load
 # source other files
 source ~/.alias
 export PATH=$PATH:/home/mads/bin
+
+
+# Enable zoxide in shell
+eval "$(zoxide init zsh)"
+
+# Enable Nix-env verison of fzf
+if [ -n "${commands[fzf-share]}" ]; then
+  source "$(fzf-share)/key-bindings.zsh"
+  source "$(fzf-share)/completion.zsh"
+fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
