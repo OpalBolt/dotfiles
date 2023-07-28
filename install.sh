@@ -6,49 +6,47 @@ sudo dnf -y install mpv
 sudo dnf -y install shellcheck
 sudo dnf -y install yamllint
 sudo dnf -y install pylint
+sudo dnf -y group install 'Development Tools'
+sudo dnf -y install exa
 
-nix-env -iA \
-	nixpkgs.tealdeer \ # better tldr is used to get short informaiton about a program
-	nixpkgs.volumeicon \ # applet with support for global keybindings
-	nixpkgs.zsh \ # better shell
-	nixpkgs.git \ # Versioning system
-	nixpkgs.neovim \ # Text editor
-	nixpkgs.tmux \ # console multiplexing
-	nixpkgs.stow \ # symlink farm manager
-	nixpkgs.skim \ # fuzzy search im RUST
-	nixpkgs.ripgrep \ # recursive regex search
-	nixpkgs.bat \ # cat but smarter
-	nixpkgs.direnv \ # set up different variables based on folder
-	nixpkgs.zoxide \ # cd alternative
-	nixpkgs.exa \ # ls alternative
-	nixpkgs.fd \ # find alternative
-	nixpkgs.prettyping \ # Pretty formatted ping
-	nixpkgs.figlet \ # Text to ascii art
-	nixpkgs.htop \ # better top
-	nixpkgs.neofetch \ # system information
-	nixpkgs.onefetch \ # Neofetch but for git
-	nixpkgs.speedtest-cli \ # speedtest cli tool
-	nixpkgs.calcurse \ # cli calendar
-	nixpkgs.duf \ # Disk usage and info
-	nixpkgs.docker \
-	nixpkgs.docker-compose \
-	nixpkgs.feh \ # lightweight image viewer
-	nixpkgs.deno \ # javascript and typescript runtime
-	nixpkgs.tfswitch \ # switch between terraform versions
-	nixpkgs. \
+nix-env -iA nixpkgs.tealdeer # information text for command
+nix-env -iA nixpkgs.git # Versioning system
+nix-env -iA nixpkgs.neovim # Text editor
+nix-env -iA nixpkgs.tmux # console multiplexing
+nix-env -iA nixpkgs.stow # symlink farm manager
+nix-env -iA nixpkgs.skim # fuzzy search im RUST
+nix-env -iA nixpkgs.ripgrep # recursive regex search
+nix-env -iA nixpkgs.bat # cat but smarter
+nix-env -iA nixpkgs.direnv # set up different variables based on folder
+nix-env -iA nixpkgs.zoxide # cd alternative
+#nix-env -iA nixpkgs.exa # ls alternative
+nix-env -iA nixpkgs.fd # find alternative
+nix-env -iA nixpkgs.prettyping # Pretty formatted ping
+nix-env -iA nixpkgs.figlet # Text to ascii art
+nix-env -iA nixpkgs.htop # better top
+nix-env -iA nixpkgs.neofetch # system information
+nix-env -iA nixpkgs.onefetch # Neofetch but for git
+nix-env -iA nixpkgs.speedtest-cli # speedtest cli tool
+nix-env -iA nixpkgs.calcurse # cli calendar
+nix-env -iA nixpkgs.duf # Disk usage and info
+nix-env -iA nixpkgs.docker
+nix-env -iA nixpkgs.docker-compose
+nix-env -iA nixpkgs.feh # lightweight image viewer
+nix-env -iA nixpkgs.deno # javascript and typescript runtime
+nix-env -iA nixpkgs.tfswitch # switch between terraform versions
 
 # Install virtualization packages
-dnf -y install qemu-kvm
-dnf -y install iptables
-dnf -y install dmidecode
-dnf -y install virt-manager
-dnf -y install virt-viewer
-dnf -y install dnsmasq
-nix-env -iA \
-	nixpkgs.vde2 \
-	nixpkgs.bridge-utils \
-	nixpkgs.netcat-openbsd \
-	nixpkgs.ebtables \
+sudo dnf -y install qemu-kvm
+sudo dnf -y install iptables
+sudo dnf -y install dmidecode
+sudo dnf -y install virt-manager
+sudo dnf -y install virt-viewer
+sudo dnf -y install dnsmasq
+
+nix-env -iA nixpkgs.vde2
+nix-env -iA nixpkgs.bridge-utils
+nix-env -iA nixpkgs.netcat-openbsd
+nix-env -iA nixpkgs.ebtables
 
 # Install oneoff apps
 curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
