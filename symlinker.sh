@@ -27,9 +27,13 @@ echo -e "\nSymlinking tmux config ..."
 rm ~/.tmux.conf
 ln -sv $dfd/.tmux.conf /home/$user/.tmux.conf
 
+echo -e "\nSymlinking tmux config folder ..."
+rm -r ~/.config/tmux
+ln -sv $dfd/tmux $cfd/tmux
+
 echo -e "\nSymlinking kitty config ..."
 rm $cfd/kitty/kitty.conf
-ln -sv $dfd/kitty/kitty.conf $cfd/kitty/kitty.conf
+ln -sv $dfd/kitty $cfd/kitty
 
 echo -e "\nSymlinking git congfig ..."
 rm ~/.gitconfig
