@@ -4,9 +4,10 @@
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 # Source zplug
-source /usr/share/zsh/scripts/zplug/
+source /usr/share/zsh/scripts/zplug/init.zsh
 
 # Use oh-my-zsh plugins
 zplug "lib/*", from:oh-my-zsh
@@ -40,14 +41,16 @@ fi
 zplug load
 
 # source other files
-source ~/.alias
+source ~/.config/.alias
 export PATH=$PATH:/home/mads/bin
-
 
 # Enable zoxide in shell
 eval "$(zoxide init zsh)"
 
-# Enable Nix-env verison of fzf
+# Disable auto title
+ZSH_THEME_TERM_TITLE_IDLE="%~"
+
+# Enable nix-evn version of fzf
 if [ -n "${commands[fzf-share]}" ]; then
   source "$(fzf-share)/key-bindings.zsh"
   source "$(fzf-share)/completion.zsh"
