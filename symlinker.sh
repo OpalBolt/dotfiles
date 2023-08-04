@@ -12,8 +12,8 @@ cfd="/home/$user/.config"
 ldf="/home/$user/.local"
 
 echo -e "\nSymlinking .aliases ..."
-rm ~/.aliases
-ln -sv $dfd/.aliases /home/$user/.aliases
+rm ~/.alias
+ln -sv $dfd/.alias /home/$user/.alias
 
 echo -e "\nSymlinking .env ..."
 rm ~/.env
