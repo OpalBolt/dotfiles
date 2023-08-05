@@ -9,3 +9,12 @@ alias vi='nvim'
 alias c='xclip'
 alias v='xclip -o'
 alias cx='xclip -selection clipboard'
+
+# use prettyping > ping
+alias ping="prettyping --nolegend"
+
+# use zoxide over cd
+alias cd="z"
+
+# add a newline before neofetch
+alias neofetch="echo -e \"\n\" && neofetch"
