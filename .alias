@@ -5,6 +5,9 @@ alias ls='exa -mhF1la --icons --color always --group-directories-first --git'
 alias vim='nvim'
 alias vi='nvim'
 
+# use g instead of git
+alias g='git'
+
 # copy paste functionlaity
 alias c='xclip'
 alias v='xclip -o'
