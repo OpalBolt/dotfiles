@@ -1,0 +1,53 @@
+[user]
+    email = mads@plikki.com
+    name = Mads Kristiansen
+
+[core]
+    pager = delta
+    editor = nvim
+
+[color]
+    ui = true
+
+[interactive]
+    diffFilter = delta --color-only --line-numbers
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color
+    line-numbers = true
+    #syntax-theme = default
+    zero-style = syntax dim
+    minus-style = syntax bold auto
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[alias]
+     # list aliases
+    aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+     # show git log history
+    g = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %C(bold blue)<%an>%Creset %Cgreen(%cr)%Creset %s' --abbrev-commit --date=relative --all
+    # small log output
+    l = !git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %C(bold blue)<%an>%Creset %Cgreen(%cr)%Creset %s' --abbrev-commit --date=relative -n 10
+    la = !git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %C(bold blue)<%an>%Creset %Cgreen(%cr)%Creset %s' --abbrev-commit --date=relative -n 10 --all
+    lag = !git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %C(bold blue)<%an>%Creset %Cgreen(%cr)%Creset %s' --abbrev-commit --date=relative -n 11 --all --graph
+    # commit with a message
+    cm = commit -m
+    # list all branches
+    b = branch -avv
+    # status
+    s = status
+    # push
+    p = push
+    # clean interactive
+    ci = clean -i
