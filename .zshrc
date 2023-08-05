@@ -27,6 +27,8 @@ zplug "zsh-users/zsh-autosuggestions", from:github, as:plugin
 zplug "zsh-users/zsh-syntax-highlighting", from:github, as:plugin, defer:2
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 zplug "MichaelAquilina/zsh-autoswitch-virtualenv", from:github, as:plugin
+zplug "djui/alias-tips", from:github, as:plugin
+
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
