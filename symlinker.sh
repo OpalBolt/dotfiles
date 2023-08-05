@@ -23,10 +23,6 @@ echo -e "\nSymlinking .zshrc ..."
 rm ~/.zshrc
 ln -sv $dfd/.zshrc /home/$user/.zshrc
 
-echo -e "\nSymlinking tmux config ..."
-rm ~/.tmux.conf
-ln -sv $dfd/.tmux.conf /home/$user/.tmux.conf
-
 echo -e "\nSymlinking tmux config folder ..."
 rm -r ~/.config/tmux
 ln -sv $dfd/tmux $cfd/tmux
