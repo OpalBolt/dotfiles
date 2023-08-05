@@ -1,0 +1,35 @@
+# __                       __                      __            
+#/\ \                     /\ \      __            /\ \           
+#\ \ \/'\      __   __  __\ \ \____/\_\    ___    \_\ \    ____  
+# \ \ , <    /'__`\/\ \/\ \\ \ '__`\/\ \ /' _ `\  /'_` \  /',__\ 
+#  \ \ \\`\ /\  __/\ \ \_\ \\ \ \L\ \ \ \/\ \/\ \/\ \L\ \/\__, `\
+#   \ \_\ \_\ \____\\/`____ \\ \_,__/\ \_\ \_\ \_\ \___,_\/\____/
+#    \/_/\/_/\/____/ `/___/> \\/___/  \/_/\/_/\/_/\/__,_ /\/___/ 
+#                       /\___/                                   
+#                       \/__/                                    
+
+# remap prefix from 'C-b' to 'C-a'
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+
+# reload config file (change file location to your the tmux.conf you want to use)
+bind r source-file ~/.config/tmux/tmux.conf
+
+# split panes using b & v and open split on same path as parent
+bind b split-window -h -c "#{pane_current_path}"
+bind v split-window -v -c "#{pane_current_path}"
+unbind '"'
+unbind %
+
+# switch panes using Alt-arrow without prefix
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# switch panes using Alt + vim-keys without prefix
+bind -n M-h select-pane -L
+bind -n M-l select-pane -R
+bind -n M-k select-pane -U
+bind -n M-j select-pane -D

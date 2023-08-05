@@ -1,3 +1,10 @@
+# __                                  __    __                                   
+#/\ \__                              /\ \__/\ \                                  
+#\ \ ,_\   ___ ___   __  __  __  _   \ \ ,_\ \ \___      __    ___ ___      __   
+# \ \ \/ /' __` __`\/\ \/\ \/\ \/'\   \ \ \/\ \  _ `\  /'__`\/' __` __`\  /'__`\ 
+#  \ \ \_/\ \/\ \/\ \ \ \_\ \/>  </    \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \/\  __/ 
+#   \ \__\ \_\ \_\ \_\ \____//\_/\_\    \ \__\\ \_\ \_\ \____\ \_\ \_\ \_\ \____\
+#    \/__/\/_/\/_/\/_/\/___/ \//\/_/     \/__/ \/_/\/_/\/____/\/_/\/_/\/_/\/____/
 
 base="#232136"
 overlay="#393552"
@@ -25,7 +32,7 @@ set -g status-right-length 500
 set -g status-interval 1
 set -g base-index 1
 setw -g pane-base-index 1
-set -g pane-border-format "#{?pane_active,#[fg=$text bg=$iris]#{pane_index}-#{pane_current_command}#[fg=$iris bg=default],#{pane_index}-#{pane_current_command}}"
+set -g pane-border-format "#{?pane_active,#[fg=$base bg=$iris]#{pane_index}-#{pane_current_command}#[fg=$iris bg=default],#{pane_index}-#{pane_current_command}}"
 set -g pane-border-status "top"
 set -g pane-border-style fg=$iris
 set -g pane-active-border-style fg=$iris
