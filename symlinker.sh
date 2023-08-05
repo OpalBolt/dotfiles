@@ -12,12 +12,12 @@ cfd="/home/$user/.config"
 ldf="/home/$user/.local"
 
 echo -e "\nSymlinking .aliases ..."
-rm ~/.alias
-ln -sv $dfd/.alias /home/$user/.alias
+rm $cfd/.alias
+ln -sv $dfd/.alias $cfd/.alias
 
 echo -e "\nSymlinking .env ..."
-rm ~/.env
-ln -sv $dfd/.env /home/$user/.env
+rm $cfd/.env
+ln -sv $dfd/.env $cfd/.env
 
 echo -e "\nSymlinking .zshrc ..."
 rm ~/.zshrc
@@ -32,8 +32,8 @@ rm -r ~/.config/tmux
 ln -sv $dfd/tmux $cfd/tmux
 
 echo -e "\nSymlinking kitty config ..."
-rm $cfd/kitty/kitty.conf
-ln -sv $dfd/kitty $cfd/kitty
+rm -r $cfd/kitty
+ln -sv $dfd/kitty $cfd/
 
 echo -e "\nSymlinking git congfig ..."
 rm ~/.gitconfig
