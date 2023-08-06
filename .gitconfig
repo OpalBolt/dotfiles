@@ -1,6 +1,10 @@
 [user]
     email = mads@plikki.com
     name = Mads Kristiansen
+	signingkey = D2E718965B4E5795!
+
+[commit]
+    gpgsign = true
 
 [core]
     pager = delta
