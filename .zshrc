@@ -21,7 +21,6 @@ zplug "plugins/aws", from:oh-my-zsh
 zplug "plugins/docker", from:oh-my-zsh
 zplug "plugins/docker-compose", from:oh-my-zsh
 
-
 # other plugins
 zplug "zsh-users/zsh-autosuggestions", from:github, as:plugin
 zplug "zsh-users/zsh-syntax-highlighting", from:github, as:plugin, defer:2
@@ -42,8 +41,10 @@ fi
 # zplug load --verbose
 zplug load
 
+
 # source other files
 source ~/.config/.alias
+source ~/.config/.env
 export PATH=$PATH:/home/mads/bin
 
 # Enable zoxide in shell
