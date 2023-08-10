@@ -38,3 +38,7 @@ ln -sv $dfd/.gitconfig /home/$user/.gitconfig
 echo -e "\nSynlinking p10k conifg ..."
 rm ~/.p10k.zsh
 ln -sv $dfd/.p10k.zsh /home/$user/.p10k.zsh
+
+echo -e "\nSymlinking changebg.sh ..."
+rm $cfd/changebg.sh
+ln -sv $dfd/changebg.sh $cfd/changebg.sh
