@@ -22,7 +22,7 @@ Hhig="#56526e"
 
 
 set -g status-style bg=$overlay,fg=$muted
-set -g status-left "#[bg=$rose, fg=$base]#{session_name} #[bg=$gold,fg=$rose]#[bg=$overlay,fg=$gold]"
+set -g status-left "#[bg=$rose, fg=$base]  #{session_name}#[bg=$gold,fg=$rose]#[bg=$overlay,fg=$gold]"
 set -g window-status-format "#[bg=$overlay] #{window_index}-#{window_name} #{?#{==:#{window_index},#{session_windows},#[bg=$foam fg=$gold],}"
 set -g window-status-current-format "#[bg=$pine,fg=$overlay]#[fg=$text] #{window_index}-#{window_name} #[bg=$overlay,fg=$pine]#{?#{==:#{window_index},#{session_windows}},#[bg=$overlay],}"
 set -g window-status-separator ""
