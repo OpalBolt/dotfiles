@@ -55,3 +55,5 @@
     p = push
     # clean interactive
     ci = clean -i
+[github]
+	user = MehAdviceGuy

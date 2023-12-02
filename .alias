@@ -21,3 +21,4 @@ alias cd="z"
 
 # add a newline before neofetch
 alias neofetch="echo -e \"\n\" && neofetch"
+
