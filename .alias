@@ -1,5 +1,5 @@
 # Ensure -al is always used
-alias ls='exa -mhF1la --icons --color always --group-directories-first --git'
+alias ls='eza -mh1la --classify=always --icons=always --color=always --group-directories-first --git'
 
 # Dont use vim by mistake
 alias vim='nvim'
