@@ -8,7 +8,7 @@ fi
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 # Source zplug
-source /usr/share/zsh/scripts/zplug/init.zsh
+source ~/.zplug/init.zsh
 
 # Use oh-my-zsh plugins
 zplug "lib/*", from:oh-my-zsh
