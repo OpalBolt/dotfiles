@@ -1,0 +1,24 @@
+#/bin/bash
+
+LANG=C
+
+#dev_symbol[bnep]="BT"
+#dev_symbol[vpn]="VPN"
+
+interfaces=$(ip route | grep 'wg-' | sed 's/.*\ dev\ \(wg-[a-z0-9\-]*\).*/\1/' | tac)
+output=""
+
+for i in $interfaces; do
+    dev_type=${i%%[0-9]*}
+    ip="$(ip -o -4 addr show dev ${i} primary | sed 's/.*inet \([0-9\.]*\)\/.*/\1/')"
+    #speed="$(/sbin/ethtool ${i} 2> /dev/null | grep -E '(Speed|Duplex)' | awk '{print $NF}')"
+    output="${output} ${dev_type}<small> (${ip})</small>"
+    #output="${output} ${dev_type}<small> (${ip} - ${speed})</small>"
+done
+echo ${output} | sed \
+    -e 's/wl[a-z]\+//g' \
+    -e 's/bnep//g' \
+    -e 's/ppp//g' \
+    -e 's/vpn//'\
+    -e 's/wg-[a-z\-]*//'
+

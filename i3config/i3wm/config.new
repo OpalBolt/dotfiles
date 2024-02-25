@@ -1,0 +1,23 @@
+#########################################
+#               i3 Config               #
+#           -- MehAdviceGuy --          #
+#########################################
+
+
+# >> Set modifiers
+set $mod Mod4
+set $smod Shift
+
+# >> Window Title font 
+font InconsolataGoNerdFontMono regular 11
+
+# >> Mouse + $mod to drag
+floating_modifier $mod
+
+# >> Includes
+include ~/.config/i3/startup
+include ~/.config/i3/navigation
+include ~/.config/i3/winsettings
+include ~/.config/i3/keybinds
+include ~/.config/i3/navigation
+

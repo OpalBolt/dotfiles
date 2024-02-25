@@ -16,8 +16,8 @@ set $wm_setting_key_right            Right
 
 set $wm_setting_app_terminal         kitty
 set $wm_setting_app_browser          floorp
-set $wm_setting_app_launcher         dmenu_run
-set $wm_setting_app_compositor       picom
+set $wm_setting_app_launcher         rofi -show drun
+set $wm_setting_app_compositor       picom ~/.config/picom/picom.conf
 
 set $wm_color_border_active_bg       #81A1C1
 set $wm_color_border_active_fg       #3B4252
@@ -29,22 +29,8 @@ set $bar_setting_position            bottom
 set $bar_setting_mode                dock
 set $bar_setting_font                pango:InconsolataGoNerdFontMono regular 15
 set $bar_setting_separator           "|"
-set $bar_setting_statusCommand       i3status
+set $bar_setting_statusCommand       SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks -c /home/mads/.config/i3blocks/i3blocks.conf
 set $bar_setting_trayoutput          none
-
-set $bar_color_background            #3B4252
-set $bar_color_foreground            #D8DEE9
-set $bar_color_statusline            #D8DEE9
-set $bar_color_separator             #D8DEE9
-
-set $bar_color_workspace_focused_bg  #A3BE8C
-set $bar_color_workspace_focused_fg  #2E3440
-set $bar_color_workspace_active_bg   #EBCB8B
-set $bar_color_workspace_active_fg   #2E3440
-set $bar_color_workspace_inactive_bg #BF616A
-set $bar_color_workspace_inactive_fg #2E3440
-set $bar_color_workspace_urgent_bg   #D08770
-set $bar_color_workspace_urgent_fg   #2E3440
 
 ### Applications ###
 # Start a terminal emulator
@@ -150,7 +136,12 @@ default_border pixel $wm_setting_border_size
 default_floating_border pixel $wm_setting_border_size
 smart_borders on
 
-# set primary Rosé Pine Moon colorscheme colors
+#  ____      _              _   _                         
+# / ___|___ | | ___  _ __  | |_| |__   ___ _ __ ___   ___ 
+#| |   / _ \| |/ _ \| '__| | __| '_ \ / _ \ '_ ` _ \ / _ \
+#| |__| (_) | | (_) | |    | |_| | | |  __/ | | | | |  __/
+# \____\___/|_|\___/|_|     \__|_| |_|\___|_| |_| |_|\___|                                                         
+
 set $base           #23213699
 set $surface        #2a273f
 set $overlay        #393552
@@ -167,28 +158,29 @@ set $highlightlow   #2a283e
 set $highlightmed   #44415a
 set $highlighthigh  #56526e
 
-# Teming border and Windows --------------
-# target                 title     bg    text   indicator  border
+#  ____      _                
+# / ___|___ | | ___  _ __ ___ 
+#| |   / _ \| |/ _ \| '__/ __|
+#| |__| (_) | | (_) | |  \__ \
+# \____\___/|_|\___/|_|  |___/
+                             
+# target                 title     bg       text   indicator  border
 client.focused           $rose     $overlay $text  $rose      $rose
-client.focused_inactive  $text     $base $text  $subtle    $surface
-client.unfocused         $base     $base $text  $base      $base
-client.urgent            $text     $base $text  $love      $love
-client.placeholder       $base     $base $text  $overlay   $overlay
+client.focused_inactive  $text     $base    $text  $subtle    $surface
+client.unfocused         $base     $base    $text  $base      $base
+client.urgent            $text     $base    $text  $love      $love
+client.placeholder       $base     $base    $text  $overlay   $overlay
 client.background        $base
 
-### Colors ###
-# class                 border                       background                   text                         indicator                    child_border
-#client.focused          $wm_color_border_active_bg   $wm_color_border_active_bg   $wm_color_border_active_fg   $wm_color_border_active_bg   $wm_color_border_active_bg
-#client.focused_inactive $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
-#client.unfocused        $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
-#client.urgent           $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
-#client.placeholder      $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
-#client.background       $wm_color_background
 
-### i3bar ###
-
+# _ _____   _                
+#(_)___ /  | |__   __ _ _ __ 
+#| | |_ \  | '_ \ / _` | '__|
+#| |___) | | |_) | (_| | |   
+#|_|____/  |_.__/ \__,_|_|   
+                            
 bar {
-    status_command i3status -c /home/mads/.config/i3status/i3status.conf
+    status_command   $bar_setting_statusCommand
 #	position         $bar_setting_position
 #	mode             $bar_setting_mode
 	font             $bar_setting_font
@@ -196,16 +188,6 @@ bar {
 #	status_command   $bar_setting_statusCommand
 	tray_output      $bar_setting_trayoutput
 
-#	colors {
-#		background   $bar_color_background
-#		statusline   $bar_color_statusline
-#		separator    $bar_color_separator
-#
-#		focused_workspace  $bar_color_workspace_focused_bg  $bar_color_workspace_focused_bg  $bar_color_workspace_focused_fg
-#		active_workspace   $bar_color_workspace_active_bg   $bar_color_workspace_active_bg   $bar_color_workspace_active_fg
-#		inactive_workspace $bar_color_workspace_inactive_bg $bar_color_workspace_inactive_bg $bar_color_workspace_inactive_fg
-#		urgent_workspace   $bar_color_workspace_urgent_bg   $bar_color_workspace_urgent_bg   $bar_color_workspace_urgent_fg
-#
     colors {
         background $base
         separator $subtle
@@ -215,7 +197,6 @@ bar {
         inactive_workspace  $base       $base           $muted
         urgent_workspace    $love       $love           $subtle
     }
-#	}
 }
 
 #           _            _ _____            _   _   _
@@ -249,8 +230,17 @@ bindsym $mod+$smod+q kill
 bindsym $mod+$smod+r restart
 
 # Key bindings for Media control keys
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
+# Pipewire-pulse
+bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle
+bindsym XF86AudioMute --release exec pkill -RTMIN+1 i3blocks
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5%
+bindsym XF86AudioLowerVolume --release exec pkill -RTMIN+1 i3blocks
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5%
+bindsym XF86AudioRaiseVolume --release exec pkill -RTMIN+1 i3blocks
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
@@ -282,7 +272,7 @@ bindsym $mod+Control+l exec /home/mads/.config/scripts/lock
 exec_always xrandr --output eDP-1 --mode 1920x1080
 
 # Set wallpaper
-exec_always feh --bg-fill ~/Downloads/io9ug6.jpeg
+exec_always feh --bg-fill --random /usr/share/backgrounds
 
 # set keymap
 exec_always setxkbmap -layout dk

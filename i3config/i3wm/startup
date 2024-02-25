@@ -1,0 +1,20 @@
+###############################
+# --------- Startup --------- #
+###############################
+
+# >> Set wallpaper wit feh
+exec --no-startup-id feh --randomize --recursive --bg-fill /usr/share/backgrounds/
+
+# >> Start lock script
+exec_always --no-startup-id xautolock -time 5 -locker '~/.config/scripts/lock'
+
+# >> Display Resolution
+exec_always xrandr --output eDP-1 --mode 1920x1080
+
+# >> set keymap
+exec_always setxkbmap -layout dk
+
+# >> Run a window compositor (for effects like transparency or full VSync)
+exec_always --no-startup-id picom ~/.config/picom/picom.conf
+
+
