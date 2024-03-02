@@ -1,0 +1,21 @@
+###############################
+# --------- Nav bar --------- #
+###############################
+
+# >> Start bar configuration
+bar {
+    status_command   SCRIPT_DIR=~/.config/i3blocks/scripts i3blocks -c /home/mads/.config/i3blocks/i3blocks.conf
+	position         buttom
+	font             pango:InconsolataGoNerdFontMono regular 15
+	separator_symbol "|"
+
+    colors {
+        background $base
+        separator $subtle
+        #                   border      background      text
+        focused_workspace   $pine       $pine           $text
+        active_workspace    $base       $base           $foam
+        inactive_workspace  $base       $base           $muted
+        urgent_workspace    $love       $love           $subtle
+    }
+}

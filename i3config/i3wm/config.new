@@ -20,4 +20,4 @@ include ~/.config/i3/navigation
 include ~/.config/i3/winsettings
 include ~/.config/i3/keybinds
 include ~/.config/i3/navigation
-
+include ~/.config/i3/bar
