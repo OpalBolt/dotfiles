@@ -8,7 +8,7 @@ colylw='\033[0;33m' # Yellow
 colpur='\033[0;35m' # Purple
 colrst='\033[0m'    # Text Reset
 
-verbosity=4
+verbosity=5
 
 ### verbosity levels
 silent_lvl=0
