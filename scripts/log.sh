@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/bash
 #shamelessy stolen from: https://www.ludovicocaldara.net/dba/bash-tips-4-use-logging-levels/
 
 colblk='\033[0;30m' # Black - Regular
@@ -18,6 +18,9 @@ wrn_lvl=3
 ntf_lvl=4
 inf_lvl=5
 dbg_lvl=6
+
+## declare verb_lvl as a global variable
+declare -i verb_lvl=0
 
 ## esilent prints output even in silent mode
 function esilent () { verb_lvl=$silent_lvl elog "$@" ;}
