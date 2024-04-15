@@ -35,18 +35,22 @@ qdate=$(date +"%Y%m%d")
 
 exit_on_empty() {
     if [[ -z "$1" ]]; then
-        elog "Now we exit"
+        elog "No valid customer chosen"
         exit 1
     fi
 }
 check_if_folder_exist() {
     if [[ -d "$1" ]]; then
-        elog "folder already exist"
+        elog "Directory already exists: $1"
         exit 1
     fi
 }
-check_if_file_exists(){
-    echo "test"
+
+check_if_file_exist() {
+    if [[ -e "$1" ]]; then
+        elog "File already exist: $1"
+        exit 1
+    fi
 }
 
 # This function is used to create files
@@ -57,22 +61,28 @@ create_file() {
     new_file_name_system=$(echo "$new_file_name" | sed -e 's/ /-/g' -e 's/[[:upper:]]/\L&/g')
     new_file_path="$base_path/$1/$qdate-$new_file_name_system.md"
     cp "$script_dir/templates/customers.txt" "$new_file_path"
+    echo "$new_file_path"
+
+}
+# Sends the inputted items into fzf for selecting
+# takes a array passed like ${array[@]}
+select_from_list() {
+    printf "%s\n" "$@" | fzf --height 40% --layout=reverse --border -i
 }
 
-fetch_all_cust() {
-    
+main() {
     menu_items=('-- New customer --')
     menu_items+=($(ls $base_path))
-    selected_customer=$(printf "%s\n" "${menu_items[@]}" | fzf --height 40% --layout=reverse --border -i)
+    selected_customer=$(select_from_list ${menu_items[@]})
     exit_on_empty $selected_customer
     elog "Selected customer: $selected_customer"
+    
 
     if [[ "$selected_customer" == "-- New customer --" ]]; then
         read -p "Enter name of new customer: " newcust
         check_if_folder_exist "$base_path/$newcust"
         mkdir "$base_path/$newcust"
-
-        create_file $newcust
+        new_file=$(create_file $newcust)
 
 
     else
@@ -86,12 +96,14 @@ fetch_all_cust() {
                 filesfromtoday+=($file)
             fi
         done
-
-        selected_file=$(printf "%s\n" "${filesfromtoday[@]}" | fzf --height 40% --layout=reverse --border -i)
-
+        selected_file=$(select_from_list ${filesfromtoday[@]})
+        if [[ "$selected_file" == "-- New file --" ]]; then
+            new_file= $(create_file $selected_customer)
+            nvim $new_file 
+        fi
 
     fi
 
 }
 
-fetch_all_cust
+main
