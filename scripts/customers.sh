@@ -52,6 +52,9 @@ check_if_file_exist() {
         exit 1
     fi
 }
+launch_file_nvim() {
+    nvim "$1" -c ":NoNeckPain" -c ":set linebreak"
+}
 
 # This function is used to create files
 # Parameters:
@@ -61,6 +64,8 @@ create_file() {
     new_file_name_system=$(echo "$new_file_name" | sed -e 's/ /-/g' -e 's/[[:upper:]]/\L&/g')
     new_file_path="$base_path/$1/$qdate-$new_file_name_system.md"
     cp "$script_dir/templates/customers.txt" "$new_file_path"
+    sed -i "s/REPLACE_TITLE/$new_file_name/g;" $new_file_path
+    sed -i "s/REPLACE_DATE/$pretty_date/g;" $new_file_path
     echo "$new_file_path"
 
 }
@@ -82,11 +87,12 @@ main() {
         read -p "Enter name of new customer: " newcust
         check_if_folder_exist "$base_path/$newcust"
         mkdir "$base_path/$newcust"
-        new_file=$(create_file $newcust)
+        selected_file=$(create_file $newcust)
 
 
     else
         customer_path="$base_path/$selected_customer"
+        elog "customer path is: $customer_path"
         custfiles=($(ls $customer_path))
         filesfromtoday=('-- New file --')
         
@@ -96,13 +102,16 @@ main() {
                 filesfromtoday+=($file)
             fi
         done
-        selected_file=$(select_from_list ${filesfromtoday[@]})
-        if [[ "$selected_file" == "-- New file --" ]]; then
-            new_file= $(create_file $selected_customer)
-            nvim $new_file 
-        fi
 
+        selected_file=$(select_from_list ${filesfromtoday[@]})
+
+        if [[ "$selected_file" == "-- New file --" ]]; then
+            selected_file=$(create_file $selected_customer)
+        else
+            selected_file="$base_path/$selected_customer/$selected_file"
+        fi
     fi
+    launch_file_nvim $selected_file
 
 }
 
