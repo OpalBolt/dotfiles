@@ -9,6 +9,7 @@ set $mod Mod4
 set $smod Shift
 
 # >> Window Title font 
+font pango:FiraCode Nerd Font Reg
 font InconsolataGoNerdFontMono regular 11
 
 # >> Mouse + $mod to drag
