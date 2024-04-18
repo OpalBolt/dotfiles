@@ -258,7 +258,7 @@ bindsym $mod+$smod+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # \___\___/|_| |_| |_|_| |_| |_|\__,_|_| |_|\__,_|___/
 
 #lock computer
-bindsym $mod+Control+l exec /home/mads/.config/scripts/lock
+bindsym $mod+Control+l exec /home/mads/scripts/lock.sh
 
 
 # ____  _             _
