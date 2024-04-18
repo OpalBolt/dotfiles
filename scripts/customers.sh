@@ -5,7 +5,8 @@ IFS=$'\n\t'
 #This way i can also reffer to the else function if i in the if part select a customr that already exist
 
 # Source other bash scripts
-. ./log.sh
+MYDIR="$(dirname "$(realpath "$0")")"
+. $MYDIR/log.sh
 
 # Initialize FZF_DEFAULT_OPTS if not already defined
 : ${FZF_DEFAULT_OPTS:=""}
@@ -87,14 +88,15 @@ main() {
         read -p "Enter name of new customer: " newcust
         check_if_folder_exist "$base_path/$newcust"
         mkdir "$base_path/$newcust"
+        selected_customer=$newcust
         selected_file=$(create_file $newcust)
 
 
     else
         customer_path="$base_path/$selected_customer"
         elog "customer path is: $customer_path"
-        custfiles=($(ls $customer_path -r))
-        filesfromtoday=('-- New file --')
+        custfiles=('-- New file --')
+        custfiles+=($(ls $customer_path -r))
         
         selected_file=$(select_from_list ${custfiles[@]})
 
@@ -104,6 +106,7 @@ main() {
             selected_file="$base_path/$selected_customer/$selected_file"
         fi
     fi
+    cd "$base_path"
     launch_file_nvim $selected_file
 
 }
