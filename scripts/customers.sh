@@ -93,17 +93,10 @@ main() {
     else
         customer_path="$base_path/$selected_customer"
         elog "customer path is: $customer_path"
-        custfiles=($(ls $customer_path))
+        custfiles=($(ls $customer_path -r))
         filesfromtoday=('-- New file --')
         
-        for file in ${custfiles[@]}; do
-            if ! test `find "$customer_path/$file" -mmin +120`
-            then
-                filesfromtoday+=($file)
-            fi
-        done
-
-        selected_file=$(select_from_list ${filesfromtoday[@]})
+        selected_file=$(select_from_list ${custfiles[@]})
 
         if [[ "$selected_file" == "-- New file --" ]]; then
             selected_file=$(create_file $selected_customer)
