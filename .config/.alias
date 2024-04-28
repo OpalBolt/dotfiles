@@ -22,3 +22,11 @@ alias cd="z"
 # add a newline before neofetch
 alias neofetch="echo -e \"\n\" && neofetch"
 
+# runs the customer.sh script.
+alias cm="bash ~/scripts/customers.sh"
+
+# uploads files to gdrive and add it to git
+alias cup="bash ~/scripts/uploadcustdocument.sh"
+
+#stow or restow dotfiles
+alias stup="stow --restow -v --dir=/home/$USER/git dotfiles"
