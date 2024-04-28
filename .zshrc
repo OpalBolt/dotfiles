@@ -47,18 +47,15 @@ zplug load
 source ~/.config/.alias
 source ~/.config/.env
 export PATH=$PATH:/home/mads/bin
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+
 
 # Enable zoxide in shell
 eval "$(zoxide init zsh)"
 
 # Disable auto title
 ZSH_THEME_TERM_TITLE_IDLE="%~"
-
-# Enable nix-evn version of fzf
-if [ -n "${commands[fzf-share]}" ]; then
-  source "$(fzf-share)/key-bindings.zsh"
-  source "$(fzf-share)/completion.zsh"
-fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
