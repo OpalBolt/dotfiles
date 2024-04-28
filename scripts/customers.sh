@@ -96,7 +96,7 @@ main() {
         customer_path="$base_path/$selected_customer"
         elog "customer path is: $customer_path"
         custfiles=('-- New file --')
-        custfiles+=($(ls $customer_path -r))
+        custfiles+=($(ls $customer_path -pr | grep -v /))
         
         selected_file=$(select_from_list ${custfiles[@]})
 
