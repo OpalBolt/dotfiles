@@ -23,7 +23,7 @@ alias cd="z"
 alias neofetch="echo -e \"\n\" && neofetch"
 
 # runs the customer.sh script.
-alias cm="bash ~/scripts/customers.sh"
+alias cu="bash ~/scripts/customers.sh"
 
 # uploads files to gdrive and add it to git
 alias cup="bash ~/scripts/uploadcustdocument.sh"
