@@ -14,11 +14,18 @@
 # --------------------
 
 import os
-import keys
-from libqtile import bar, layout, widget
-from libqtile.config import Click, Drag, Match, Screen
+import initkeys
+import initcolors
+import initlayout
+import initkeymap
+import initwidgets
+import initscreens
+from libqtile import bar, widget
+from libqtile.config import Click, Drag, Screen
 from libqtile.lazy import lazy
 from pathlib import Path
+
+# from libqtile.backend.wayland import InputConfig
 
 # --------------------
 # Auto fetching variables
@@ -33,64 +40,25 @@ platform = int(
 # --------------------
 mod = "mod4"
 terminal = "kitty"
-keys.define_all_keys(mod, terminal)
+keyboard_Lang = "dk"
+theme = "kanagawa"
+font = "IosevkaTerm NFM"
 
+# Load keymap from initkeys.py
+keys = initkeys.define_all_keys(mod, terminal)
 
-layouts = [
-    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
-    layout.Max(),
-    # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=2),
-    # layout.Bsp(),
-    # layout.Matrix(),
-    # layout.MonadTall(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
-]
+# Load colors from initcolors.py
+# Currently only the following colors schemes has been created
+# for this configuration
+# kanagawa
+colors = initcolors.load_colors(theme)
+layouts = initlayout.load_layout(colors)
+floating_layout = initlayout.load_floating_layout(colors)
+wl_input_rules = initkeymap.load_keymap(keyboard_Lang)
 
-widget_defaults = dict(
-    font="sans",
-    fontsize=12,
-    padding=3,
-)
+widget_defaults = initwidgets.load_widget_defaults(font)
 extension_defaults = widget_defaults.copy()
-
-screens = [
-    Screen(
-        bottom=bar.Bar(
-            [
-                widget.CurrentLayout(),
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        "launch": ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
-                ),
-                widget.TextBox("default config", name="default"),
-                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
-                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
-                # widget.StatusNotifier(),
-                widget.Systray(),
-                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.QuickExit(),
-            ],
-            24,
-            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
-            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
-        ),
-        # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
-        # By default we handle these events delayed to already improve performance, however your system might still be struggling
-        # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
-        # x11_drag_polling_rate = 60,
-    ),
-]
+screens = initscreens.load_screens(colors)
 
 # Drag floating layouts.
 mouse = [
@@ -112,18 +80,6 @@ follow_mouse_focus = True
 bring_front_click = False
 floats_kept_above = True
 cursor_warp = False
-floating_layout = layout.Floating(
-    float_rules=[
-        # Run the utility of `xprop` to see the wm class and name of an X client.
-        *layout.Floating.default_float_rules,
-        Match(wm_class="confirmreset"),  # gitk
-        Match(wm_class="makebranch"),  # gitk
-        Match(wm_class="maketag"),  # gitk
-        Match(wm_class="ssh-askpass"),  # ssh-askpass
-        Match(title="branchdialog"),  # gitk
-        Match(title="pinentry"),  # GPG key password entry
-    ]
-)
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
@@ -132,8 +88,6 @@ reconfigure_screens = True
 # focus, should we respect this or not?
 auto_minimize = True
 
-# When using the Wayland backend, this can be used to configure input devices.
-wl_input_rules = None
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
