@@ -128,19 +128,17 @@ bindsym $mod+r mode "resize"
 #gaps vertical   $wm_setting_gap_heigth
 gaps inner 10
 gaps outer -5
-smart_gaps on
-smart_borders on
+smart_gaps off
 
 ### Borders ###
 default_border pixel $wm_setting_border_size
 default_floating_border pixel $wm_setting_border_size
-smart_borders on
 
-#  ____      _              _   _                         
-# / ___|___ | | ___  _ __  | |_| |__   ___ _ __ ___   ___ 
+#  ____      _              _   _
+# / ___|___ | | ___  _ __  | |_| |__   ___ _ __ ___   ___
 #| |   / _ \| |/ _ \| '__| | __| '_ \ / _ \ '_ ` _ \ / _ \
 #| |__| (_) | | (_) | |    | |_| | | |  __/ | | | | |  __/
-# \____\___/|_|\___/|_|     \__|_| |_|\___|_| |_| |_|\___|                                                         
+# \____\___/|_|\___/|_|     \__|_| |_|\___|_| |_| |_|\___|
 
 set $base           #23213699
 set $surface        #2a273f
@@ -158,12 +156,12 @@ set $highlightlow   #2a283e
 set $highlightmed   #44415a
 set $highlighthigh  #56526e
 
-#  ____      _                
-# / ___|___ | | ___  _ __ ___ 
+#  ____      _
+# / ___|___ | | ___  _ __ ___
 #| |   / _ \| |/ _ \| '__/ __|
 #| |__| (_) | | (_) | |  \__ \
 # \____\___/|_|\___/|_|  |___/
-                             
+
 # target                 title     bg       text   indicator  border
 client.focused           $rose     $overlay $text  $rose      $rose
 client.focused_inactive  $text     $base    $text  $subtle    $surface
@@ -173,12 +171,12 @@ client.placeholder       $base     $base    $text  $overlay   $overlay
 client.background        $base
 
 
-# _ _____   _                
-#(_)___ /  | |__   __ _ _ __ 
+# _ _____   _
+#(_)___ /  | |__   __ _ _ __
 #| | |_ \  | '_ \ / _` | '__|
-#| |___) | | |_) | (_| | |   
-#|_|____/  |_.__/ \__,_|_|   
-                            
+#| |___) | | |_) | (_| | |
+#|_|____/  |_.__/ \__,_|_|
+
 bar {
     status_command   $bar_setting_statusCommand
 #	position         $bar_setting_position
