@@ -1,15 +1,33 @@
 Linux
-https://mischavandenburg.com/index.xml Linux "~Mischa van den Burg" Devops
-https://archlinux.org/feeds/news/ Linux "~Arch Linux blog" Updates
+https://mischavandenburg.com/index.xml Linux "~Mischa van den Burg" Devops Personal-blog Technology Software-Development
+https://archlinux.org/feeds/news/ Linux "~Arch Linux blog" OS Open-Source News-Tech
+
+Programming
+https://adamtheautomator.com/feed/ Programming "~Adam the automator" Python Automation DevOps
+
+"Tech news"
+https://4sysops.com/feed/ "Tech News" "~4 sysops" News-Tech
+https://us-cert.cisa.gov/ncas/alerts.xml "Tech news" "~CISA Alerts" Cypersecurity
+https://hnrss.org/frontpage "Tech news" "~Hacker News frontpage" News-Tech Software-Development
+https://rss.slashdot.org/Slashdot/slashdotMain "Tech news" "~Slashdot" News-Tech
+https://www.spiceworks.com/feed/?taxonomy=topic "Tech News" "~Spiceworks" News-Tech
+https://www.bleepingcomputer.com/feed/ "Tech News" "~bleepingcomputer" News-Tech
+
+Audio
+https://api.dr.dk/podcasts/v1/feeds/radioavisen Audio "~DR radioavisen" News-DK
 
 Youtube
-https://www.youtube.com/feeds/videos.xml?channel_id=UCg6gPGh8HU2U01vaFCAsvmQ Youtube "~Chris Titus Tech"
+https://www.youtube.com/feeds/videos.xml?channel_id=UCg6gPGh8HU2U01vaFCAsvmQ Youtube "~Chris Titus Tech" Linux
+https://www.youtube.com/feeds/videos.xml?channel_id=UCaiL2GDNpLYH6Wokkk1VNcg Youtube "~mCoding" Python Linux
 
 Mastodon
 https://mastodon.social/@climagic.rss Mastodon "~Command Line Magic" Tech
 
+"Application updates"
+https://github.com/LazyVim/LazyVim/releases.atom "Automation updates" "~LazyVim releases" vim dotfiles
+
 Atlassian
-https://atlassianblog.wpengine.com/feed Atlassian "~Work life"
-https://blog.developer.atlassian.com/feed Atlassian "~Software developer blog"
-https://developer.atlassian.com/cloud/jira/platform/changelog/rss/u/63b2a7108a07cbd184ab1684 Atlassian "~Cloud changelog"
-https://developer.atlassian.com/cloud/jira/software/changelog/rss/u/63b2a7108a07cbd184ab1684 Atlassian "~Jira changelog"
+https://atlassianblog.wpengine.com/feed Atlassian "~Work life" Company-blog
+https://blog.developer.atlassian.com/feed Atlassian "~Software developer blog" Changelog
+https://developer.atlassian.com/cloud/jira/platform/changelog/rss/u/63b2a7108a07cbd184ab1684 Atlassian "~Cloud changelog" Changelog
+https://developer.atlassian.com/cloud/jira/software/changelog/rss/u/63b2a7108a07cbd184ab1684 Atlassian "~Jira changelog" Changelog

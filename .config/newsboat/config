@@ -1,6 +1,8 @@
 #Abselutely stolen from: https://gitlab.com/dj-bauer/newsboat-rice/-/blob/master/config?ref_type=heads
+text-width 72
 auto-reload yes
 max-items 100
+reload-threads 100
 
 color listnormal default default
 color listfocus default default reverse
