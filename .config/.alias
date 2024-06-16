@@ -35,3 +35,6 @@ alias stup="stow --restow -v --dir=/home/$USER/git dotfiles"
 alias outlook='chromium --app=https://outlook.office365.com/mail/ --profile-directory="Default" --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" &'
 alias teams='chromium --app=https://teams.microsoft.com/ --profile-directory="Default" --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" &'
 
+# Set up alias for date script
+alias dt="bash ~/scripts/date.sh"
+
