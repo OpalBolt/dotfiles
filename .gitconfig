@@ -9,7 +9,6 @@
 [core]
     pager = delta
     editor = nvim
-    hooksPath = /home/user/scripts/githooks
 
 [color]
     ui = true

@@ -1,9 +1,0 @@
-repos:
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.17.0
-    hooks:
-      - id: gitleaks-docker
-        name: Detect hardcoded secrets
-        description: Detect hardcoded secrets using Gitleaks
-        entry: zricethezav/gitleaks protect --verbose --redact --staged
-        language: docker_image
