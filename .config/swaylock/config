@@ -1,0 +1,85 @@
+#
+#                                            ,,
+#   .M"""bgd                               `7MM                  `7MM
+#  ,MI    "Y                                 MM                    MM
+#  `MMb.  `7M'    ,A    `MF',6"Yb.`7M'   `MF'MM  ,pW"Wq.   ,p6"bo  MM  ,MP'
+#    `YMMNq.VA   ,VAA   ,V 8)   MM  VA   ,V  MM 6W'   `Wb 6M'  OO  MM ;Y
+#  .     `MM VA ,V  VA ,V   ,pm9MM   VA ,V   MM 8M     M8 8M       MM;Mm
+#  Mb     dM  VVV    VVV   8M   MM    VVV    MM YA.   ,A9 YM.    , MM `Mb.
+#  P"Ybmmd"    W      W    `Moo9^Yo.  ,V   .JMML.`Ybmd9'   YMbmd'.JMML. YA.
+#                                    ,V
+#                                 OOb"
+# Config stolen from: https://github.com/wingej0/dotfiles/blob/main/swaylock/Config
+
+daemonize
+show-failed-attempts
+ignore-empty-password
+
+clock
+timestr=%R
+datestr=%a, %e of %B
+
+grace=1
+grace-no-mouse
+grace-no-touch
+
+# Add current screenshot as wallpaper
+screenshots
+
+# Add an image as a background
+# In my setup the current wallpaper (requires wallpaper scripts in /scripts)
+#image=~/.cache/current_wallpaper.jpg
+
+# Fade in time
+fade-in=0.2
+
+# Effect for background
+effect-blur=10x5
+#effect-greyscale
+#effect-pixelate=5
+
+# Show/Hide indicator circle
+indicator
+
+# smaller indicator
+indicator-radius=200
+
+# bigger indicator
+# indicator-radius=300
+
+indicator-thickness=15
+indicator-caps-lock
+
+# Define all colors
+
+key-hl-color=7FB4CA
+separator-color=00000000
+
+inside-color=2A2A3733
+inside-clear-color=2A2A3733
+inside-caps-lock-color=FFA06633
+inside-ver-color=2A2A3733
+inside-wrong-color=E8242433
+
+ring-color=DCD7BA
+ring-clear-color=DCD7BA
+ring-caps-lock-color=DCD7BA
+ring-ver-color=98BB6C
+ring-wrong-color=DCD7BA
+
+line-color=DCD7BA
+line-clear-color=DCD7BA
+line-caps-lock-color=DCD7BA
+line-ver-color=DCD7BA
+line-wrong-color=DCD7BA
+
+text-color=DCD7BA
+text-clear-color=ffffff
+text-ver-color=ffffff
+text-wrong-color=ffffff
+
+bs-hl-color=7FB4CA
+caps-lock-key-hl-color=D27E99
+caps-lock-bs-hl-color=7FB4CA
+disable-caps-lock-text
+text-caps-lock-color=DCD7BA
