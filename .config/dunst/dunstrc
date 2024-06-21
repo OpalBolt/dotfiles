@@ -3,7 +3,7 @@
 [global]
     ### Display ###
     monitor = 0
-	follow = keyboard
+	follow = mouse
 
 
     ### Geometry ###
@@ -222,3 +222,6 @@
     foreground = "#E82424"
     frame_color = "#E82424"
     timeout = 0
+
+[slack]
+    appname = Slack
