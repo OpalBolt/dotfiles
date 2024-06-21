@@ -29,7 +29,7 @@ alias cu="bash ~/scripts/customers.sh"
 alias cup="bash ~/scripts/uploadcustdocument.sh"
 
 #stow or restow dotfiles
-alias stup="stow --restow -v --dir=/home/$USER/git dotfiles"
+alias stup="stow --restow -v --dir=/home/$USER/git/personal --target=/home/$USER dotfiles"
 
 # Set up alias to launch teams and outlook as apps in chromium
 alias outlook='chromium --app=https://outlook.office365.com/mail/ --profile-directory="Default" --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" &'
@@ -38,3 +38,5 @@ alias teams='chromium --app=https://teams.microsoft.com/ --profile-directory="De
 # Set up alias for date script
 alias dt="bash ~/scripts/date.sh"
 
+# Run git-leaks on current directory
+alias gle='podman run --rm -v ${PWD}:/path docker.io/zricethezav/gitleaks:latest detect --source="/path" --verbose'
