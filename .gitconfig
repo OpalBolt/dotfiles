@@ -55,5 +55,12 @@
     p = push
     # clean interactive
     ci = clean -i
+    change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
+
 [github]
-	user = MehAdviceGuy
+    user = Hexamo
+
+[includeIf "gitdir:~/git/work/"]
+    path = .gitconfig-work
+[includeIf "gitdir:~/git/personal/"]
+    path = .gitconfig-personal
