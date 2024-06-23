@@ -20,7 +20,7 @@ alias ping="prettyping --nolegend"
 alias cd="z"
 
 # add a newline before neofetch
-alias neofetch="echo -e \"\n\" && neofetch"
+alias neofetch="fastfetch"
 
 # runs the customer.sh script.
 alias cu="bash ~/scripts/customers.sh"
@@ -40,3 +40,13 @@ alias dt="bash ~/scripts/date.sh"
 
 # Run git-leaks on current directory
 alias gle='podman run --rm -v ${PWD}:/path docker.io/zricethezav/gitleaks:latest detect --source="/path" --verbose'
+
+# Update Pacman mirrors
+# Stolen from: https://github.com/zanderhavgaard/dotfiles/blob/master/.aliases
+alias sync_pacman_mirrors="reflector --country Denmark,Sweden,Norway,Germany --fastest 10 --protocol https --verbose"
+
+# gita aliases
+alias lg="lazygit"
+alias gs="git status"
+
+
