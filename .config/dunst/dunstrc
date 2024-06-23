@@ -7,7 +7,7 @@
 
 
     ### Geometry ###
-    width = (0, 300)
+    width = (0, 600)
     height = 300
 
     origin = top-right
@@ -51,7 +51,7 @@
 
 
     ### Text ###
-    font = ShureTechMono Nerd Font 11
+    font = IosevkaTerm NFP 13
 
 	line_height = 0
 
