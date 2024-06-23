@@ -16,13 +16,18 @@
 [interactive]
     diffFilter = delta --color-only --line-numbers
 
+[include]
+    path = ~/.config/git/deltatheme/themes.thTheme
+
 [delta]
     navigate = true    # use n and N to move between diff sections
-    light = false      # set to true if you're in a terminal w/ a light background color
+    #light = false      # set to true if you're in a terminal w/ a light background color
+    dark = true
     line-numbers = true
     #syntax-theme = default
     zero-style = syntax dim
     minus-style = syntax bold auto
+    features = Kanagawa
 
 [merge]
     conflictstyle = diff3
@@ -64,3 +69,4 @@
     path = .gitconfig-work
 [includeIf "gitdir:~/git/personal/"]
     path = .gitconfig-personal
+
