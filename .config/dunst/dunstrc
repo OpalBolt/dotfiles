@@ -7,12 +7,12 @@
 
 
     ### Geometry ###
-    width = (0, 600)
-    height = 300
+    width = (0, 400)
+    height = 200
 
     origin = top-right
 
-    offset = 10x50
+    offset = 5x40
 
     scale = 0
 
@@ -34,10 +34,10 @@
     transparency = 0
 
     separator_height = 3
-    padding = 8
-    horizontal_padding = 8
+    padding = 5
+    horizontal_padding = 5
 
-    text_icon_padding = 5
+    text_icon_padding = 10
 
     frame_width = 3
     frame_color = "#29293f"
@@ -51,7 +51,7 @@
 
 
     ### Text ###
-    font = IosevkaTerm NFP 13
+    font = IosevkaTerm NFP 11
 
 	line_height = 0
 
@@ -91,7 +91,7 @@
     # Markup is allowed
     format = "<b>%a</b>\n%s\n\n%b"
 	alignment = left
-	vertical_alignment = center
+	vertical_alignment = top
 
     show_age_threshold = 60
 
@@ -109,8 +109,8 @@
     enable_recursive_icon_lookup = false
     icon_theme = kora
     icon_position = left
-    min_icon_size = 30
-    max_icon_size = 128
+    min_icon_size = 10
+    max_icon_size = 75
     icon_path = /usr/share/icons/Adwaita/16x16/status/:/usr/share/icons/Adwaita/16x16/devices/:/usr/share/icons/Adwaita/16x16/legacy/
 
     ### History ###
