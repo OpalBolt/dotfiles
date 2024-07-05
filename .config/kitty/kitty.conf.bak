@@ -122,3 +122,6 @@ draw_minimal_borders yes
 # Kanagawa_dragon
 include current-theme.conf
 # END_KITTY_THEME
+#
+allow_remote_control yes
+listen_on unix:@mykitty
