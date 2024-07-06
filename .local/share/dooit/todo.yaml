@@ -1,0 +1,156 @@
+- uuid: workspace_8d00a293-d53b-4698-a2c3-f5acc47e86b2
+  description: Qtile
+  todos:
+  - - uuid: todo_87a4a495-aa02-4491-a37e-46dbf0f8aebf
+      status: PENDING
+      urgency: 1
+      description: bar
+      due: none
+      effort: ''
+      recurrence: ''
+    - - - uuid: todo_75ee2c24-57a1-46e8-bdca-1c9b90eb7a48
+          status: PENDING
+          urgency: 1
+          description: VPN
+          due: none
+          effort: ''
+          recurrence: ''
+        - - - uuid: todo_f884c88a-8726-4a8f-bd07-4d99da9bf7f7
+              status: PENDING
+              urgency: 1
+              description: Click function to open VPN connection menu
+              due: none
+              effort: ''
+              recurrence: ''
+          - - uuid: todo_c2936267-a020-4287-ba68-ce2799361a12
+              status: PENDING
+              urgency: 1
+              description: Click function to see what connection is active (see Wifi)
+              due: none
+              effort: ''
+              recurrence: ''
+          - - uuid: todo_989cc4c2-e451-4a0d-b49c-58e6b70ba958
+              status: PENDING
+              urgency: 1
+              description: Icon to tell if a connection is active
+              due: none
+              effort: ''
+              recurrence: ''
+  - - uuid: todo_eb95f3b9-1de4-46e8-b43c-274568b6ae63
+      status: PENDING
+      urgency: 1
+      description: Fix startup script
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_6fc57a7a-e1e6-4010-9fab-39a2e325a8c2
+      status: PENDING
+      urgency: 1
+      description: Randomize wallpapers
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_4340108c-8f9c-41e0-8f36-615ca3bd57ee
+      status: PENDING
+      urgency: 1
+      description: scratchbox
+      due: none
+      effort: ''
+      recurrence: ''
+    - - - uuid: todo_f9c961d1-fcb3-4f10-84d7-fa7bc5ba7d2d
+          status: PENDING
+          urgency: 1
+          description: Add CGPT to pooup window
+          due: none
+          effort: ''
+          recurrence: ''
+  workspaces: []
+- uuid: workspace_2fdcb3a8-d4b1-4a95-8e9d-eb0560485cd8
+  description: Learning
+  todos:
+  - - uuid: todo_049fc1e5-fe2b-44e5-895d-8770ef3e3498
+      status: PENDING
+      urgency: 1
+      description: Kubernetes
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_a7d90cde-43c8-4893-ad52-9aacc9320117
+      status: PENDING
+      urgency: 1
+      description: Wire-guard - Linux
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_7a774c2c-d2f0-4c45-8465-47226f984d54
+      status: PENDING
+      urgency: 1
+      description: Linux seceret management
+      due: none
+      effort: ''
+      recurrence: ''
+    - - - uuid: todo_be0380c0-f3e1-46e9-ada7-affc259fcff9
+          status: PENDING
+          urgency: 1
+          description: git-secrets
+          due: none
+          effort: ''
+          recurrence: ''
+  workspaces: []
+- uuid: workspace_56fec99e-71cb-4292-bd90-2f7483f4ecee
+  description: Home server
+  todos:
+  - - uuid: todo_aaec33d6-cad1-4d5a-b7c0-13da3881f311
+      status: PENDING
+      urgency: 1
+      description: Set up home server
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_33211edd-e684-4f55-b6da-c6ab6deddf92
+      status: PENDING
+      urgency: 1
+      description: Set up Node-red
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_739f4498-11b8-461b-bfa5-70c4c4b94f3f
+      status: PENDING
+      urgency: 1
+      description: Set up search engien
+      due: none
+      effort: ''
+      recurrence: ''
+  workspaces: []
+- uuid: workspace_b6aafada-c0af-47d6-83ba-b853838fb742
+  description: Scripts
+  todos:
+  - - uuid: todo_7bad0ee5-ac62-41d7-8374-631d1257aa45
+      status: PENDING
+      urgency: 1
+      description: wlr-randr auto screen selection
+      due: none
+      effort: ''
+      recurrence: ''
+  - - uuid: todo_3dd6261e-aaea-423a-ac6c-25d5d0628549
+      status: PENDING
+      urgency: 1
+      description: Music
+      due: none
+      effort: ''
+      recurrence: ''
+    - - - uuid: todo_0adeadb5-8417-4aaf-9bf2-953eb9a9b671
+          status: PENDING
+          urgency: 1
+          description: refine list
+          due: none
+          effort: ''
+          recurrence: ''
+      - - uuid: todo_e24a3ca1-561f-47a3-94f8-feeef49c4576
+          status: PENDING
+          urgency: 1
+          description: Make selection of gangre avalible
+          due: none
+          effort: ''
+          recurrence: ''
+  workspaces: []
