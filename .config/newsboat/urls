@@ -1,6 +1,8 @@
 Linux
 https://mischavandenburg.com/index.xml Linux "~Mischa van den Burg" Devops Personal-blog Technology Software-Development
 https://archlinux.org/feeds/news/ Linux "~Arch Linux blog" OS Open-Source News-Tech
+https://raesene.github.io/feed.xml "~Docker Kubernetes fun" Personal-blog Technology Docker
+https://blog.stonegarden.dev/index.xml "~Kubernetes fun!" Personal-blog Technology Kubernetes
 
 Programming
 https://adamtheautomator.com/feed/ Programming "~Adam the automator" Python Automation DevOps
@@ -31,3 +33,4 @@ https://atlassianblog.wpengine.com/feed Atlassian "~Work life" Company-blog
 https://blog.developer.atlassian.com/feed Atlassian "~Software developer blog" Changelog
 https://developer.atlassian.com/cloud/jira/platform/changelog/rss/u/63b2a7108a07cbd184ab1684 Atlassian "~Cloud changelog" Changelog
 https://developer.atlassian.com/cloud/jira/software/changelog/rss/u/63b2a7108a07cbd184ab1684 Atlassian "~Jira changelog" Changelog
+https://developer.atlassian.com/cloud/jira/service-desk/changelog/rss/a/147f2d30-0f00-4eca-905d-b3358a77e954 Atlassian "~JSM changelog" Changelog
