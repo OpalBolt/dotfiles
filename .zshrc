@@ -58,5 +58,8 @@ eval "$(zoxide init zsh)"
 # Disable auto title
 ZSH_THEME_TERM_TITLE_IDLE="%~"
 
+# Enable commands run with space being ignored from history
+setopt HIST_IGNORE_SPACE
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
