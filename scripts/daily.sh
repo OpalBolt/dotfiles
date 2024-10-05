@@ -8,10 +8,10 @@
 
 # Setting variables
 today=$(date +"%Y%m%d")
-dailypath="$SECOND_BRAIN/dailynotes"
+dailypath="$SECOND_BRAIN/daily-notes"
 
 # Function to fetch the newest daily file
-get_newest_daily(){
+get_newest_daily() {
     # Create array of files from daily path
     edebug "loading array from $dailypath"
     filearray=($("ls" -r $dailypath))
@@ -43,38 +43,27 @@ open_file() {
         # CD into daily path
         edebug "cd into dailypath"
         cd "$dailypath" || exit
-      
+
         # Create daily file
         edebug "Create $today.md file"
         touch "$today.md"
-      
+
         # input all content into today that is needed
         edebug "fill out $today.md with default infomation"
-        tee "$today.md" << EOF
+        tee "$today.md" <<EOF
 ---
 date: $(date +"%Y-%m-%d")
 tag:
 - daily
 ---
-
-## Agenda
-
-## Todo
-$(grep -Pi '^-\s\[(?!x\])(.)\]' $newest_daily)
-
 ## Notes
 
-## links
 EOF
-        # Remove old TODO's
-        edebug "fix all open tasks in newest_daily"
-        sed -i 's/\[ \]/\[X\]/g' $newest_daily
-
         # Opens up todays note in Neovim
         edebug "open up $today.md with neovim"
         nvim "$today.md"
 
-        fi
+    fi
 }
 
 # Run openfile function
