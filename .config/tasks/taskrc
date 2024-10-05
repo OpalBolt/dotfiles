@@ -39,3 +39,12 @@ data.location=/home/mads/.local/tasks/task
 #include solarized-light-256.theme
 #include no-color.theme
 
+#default.command=ready
+report.ready.columns=id,start.active,depends.indicator,project,due.relative,description.desc
+report.ready.labels= ,,Depends, Project, Due, Description
+
+
+news.version=3.1.0
+
+verbose=blank,footnote,label,new-id,affected,edit,special,project,sync,unwait
+
