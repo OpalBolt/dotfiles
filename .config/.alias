@@ -49,4 +49,5 @@ alias sync_pacman_mirrors="reflector --country Denmark,Sweden,Norway,Germany --f
 alias lg="lazygit"
 alias gs="git status"
 
-
+# opentofu to terraform
+alias terraform="tofu"
