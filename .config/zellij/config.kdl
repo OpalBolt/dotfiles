@@ -3,7 +3,7 @@ keybinds {
     normal clear-defaults=true{
         // uncomment this and adjust key if using copy_on_select=false
         // bind "Alt c" { Copy; }
-        unbind "Ctrl b"
+        // unbind "Ctrl b"
         bind "Ctrl b" { SwitchToMode "Tmux"; }
 
         bind "Alt Left" { MoveFocusOrTab "Left"; }
