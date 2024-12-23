@@ -39,7 +39,7 @@ alias teams='chromium --app=https://teams.microsoft.com/ --profile-directory="De
 alias dt="bash ~/scripts/date.sh"
 
 # Run git-leaks on current directory
-alias gle='podman run --rm -v ${PWD}:/path docker.io/zricethezav/gitleaks:latest detect --source="/path" --verbose'
+alias gle='podman run --rm -v ${PWD}:/path docker.io/zricethezav/gitleaks:latest git --verbose /path'
 
 # Update Pacman mirrors
 # Stolen from: https://github.com/zanderhavgaard/dotfiles/blob/master/.aliases
