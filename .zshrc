@@ -54,3 +54,33 @@ eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 eval "$(gh copilot alias -- zsh)"
 eval "$(direnv hook zsh)"
+
+# ZSH Scripts
+
+# Update name of Zellij tab.
+zellij_tab_name_update() {
+  if [[ -n $ZELLIJ ]]; then
+    tab_name=''
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        tab_name+=$(basename "$(git rev-parse --show-toplevel)")/
+        tab_name+=$(git rev-parse --show-prefix)
+        tab_name=${tab_name%/}
+    elif [[ -n $VIMFILE ]]; then
+        tab_name=$VIMFILE
+        #tab_name=${tab_name%/}
+    else
+        tab_name=$PWD
+            if [[ $tab_name == $HOME ]]; then
+            tab_name="~"
+             else
+            tab_name=${tab_name##*/}
+             fi
+    fi
+    # Shorten the name if it's longer than 20 characters
+    if [[ ${#tab_name} -gt 20 ]]; then
+        tab_name="${tab_name:0:5}..."
+    fi
+    command nohup zellij action rename-tab $tab_name >/dev/null 2>&1
+  fi
+}
+precmd_functions+=(zellij_tab_name_update)
