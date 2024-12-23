@@ -51,3 +51,6 @@ alias gs="git status"
 
 # opentofu to terraform
 alias terraform="tofu"
+
+# Password generation
+alias gpass='xkcdpass -RViC capitalize | tee >(tail -n 1 | wl-copy)'
