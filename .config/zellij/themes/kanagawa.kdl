@@ -9,11 +9,13 @@ themes{
         green "#7E9CD8"
         // yellow "#C0A36E"
         yellow "#18BB6C"
-        blue "#7E9CD8"
+        //blue "#7E9CD8"
+        blue "#C8C093"
         magenta "#957FB8"
         orange "#FFA066"
         cyan "#6A9589"
         black "#090618"
-        white "#C8C093"
+        //white "#C8C093"
+        white "#7E9CD8"
     }
 }
