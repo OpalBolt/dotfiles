@@ -52,3 +52,5 @@ setopt HIST_IGNORE_SPACE
 # Itialize apps
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
+eval "$(gh copilot alias -- zsh)"
+eval "$(direnv hook zsh)"
