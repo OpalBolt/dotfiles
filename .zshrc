@@ -43,13 +43,12 @@ source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
 
 
-# Enable zoxide in shell
-eval "$(zoxide init zsh)"
-
 # Disable auto title
 ZSH_THEME_TERM_TITLE_IDLE="%~"
 
 # Enable commands run with space being ignored from history
 setopt HIST_IGNORE_SPACE
 
+# Itialize apps
+eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
