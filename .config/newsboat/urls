@@ -4,6 +4,10 @@ https://archlinux.org/feeds/news/ Linux "~Arch Linux blog" OS Open-Source News-T
 https://raesene.github.io/feed.xml "~Docker Kubernetes fun" Personal-blog Technology Docker
 https://blog.stonegarden.dev/index.xml "~Kubernetes fun!" Personal-blog Technology Kubernetes
 
+Github
+https://github.blog/changelog/feed/ "~Github blog" Devops Technology
+https://code.visualstudio.com/feed.xml "~VS Code updates" Devops Technology
+
 Programming
 https://adamtheautomator.com/feed/ Programming "~Adam the automator" Python Automation DevOps
 
