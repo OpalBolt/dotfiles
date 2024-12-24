@@ -65,8 +65,8 @@
 [github]
     user = Hexamo
 
-[includeIf "gitdir:~/git/work/"]
-    path = .gitconfig-work
+; [includeIf "gitdir:~/git/work/"]
+;     path = .gitconfig-work
 [includeIf "gitdir:~/git/personal/"]
     path = .gitconfig-personal
 
