@@ -8,6 +8,7 @@ starship init fish | source
 direnv hook fish | source
 fzf --fish | source
 mise activate fish | source
+envoke shell-init --shell fish | source
 
 # one local agent per machine, reused across shells; never clobber a forwarded socket
 if test -z "$SSH_AUTH_SOCK"
