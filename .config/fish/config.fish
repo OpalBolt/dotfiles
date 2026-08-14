@@ -3,6 +3,9 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
+# Ensure that we do not get Fish splash screen
+set fish_greeting
+
 zoxide init fish | source
 starship init fish | source
 direnv hook fish | source
