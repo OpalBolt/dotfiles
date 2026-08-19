@@ -1,3 +1,0 @@
-# tmux plugin manager (tpm) and installed plugins — cloned by TPM, never commit.
-# These live on disk for tmux to use but should not be version-controlled.
-plugins/

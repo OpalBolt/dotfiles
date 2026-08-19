@@ -1,0 +1,18 @@
+// Homelab — ported from the old sesh [[session]] block.
+// serve tab: shell on top, `just serve` in a 20% bottom pane (pane survives
+// via `exec fish`, same trick as before). work tab is where you land.
+// compact-bar at the top keeps Alt+1..9 switching visible; bottom stays empty.
+layout {
+    cwd "/home/mads/git/projects/Homelab"
+    pane size=1 borderless=true {
+        plugin location="zellij:compact-bar"
+    }
+    tab name="serve" {
+        pane focus=true
+        pane size="20%" {
+            command "sh"
+            args "-c" "just serve; exec fish"
+        }
+    }
+    tab name="work" focus=true
+}

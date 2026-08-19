@@ -1,0 +1,10 @@
+// Bare `zellij` / new sessions via `zj`: one shell in ~/git.
+// One-row tab bar at the top, nothing at the bottom, no pane frames
+// (frames are off globally in config.kdl).
+layout {
+    cwd "/home/mads/git"
+    pane size=1 borderless=true {
+        plugin location="zellij:compact-bar"
+    }
+    pane
+}

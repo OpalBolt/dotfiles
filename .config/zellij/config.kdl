@@ -1,0 +1,46 @@
+// ── zellij — everything not set here is a sane default ───────────────
+// Session resurrection is ON by default (serialized ~every minute).
+// Full annotated reference: zellij setup --dump-config
+
+theme "kanagawa"                 // builtin — matches the kitty kanagawa theme
+pane_frames false                // no box around every pane (old tmux look)
+
+keybinds {
+    shared_except "locked" {
+        // Alt+1..9 → tab n. Positional (tabs renumber when one closes),
+        // same behaviour as tmux renumber-windows + base-index 1.
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+
+        // Ctrl+hjkl → seamless pane/tab nav, also across nvim splits.
+        // Replaces vim-tmux-navigator. Neovim half: swaits/zellij-nav.nvim.
+        // Locked mode (Ctrl+g) still passes Ctrl+hjkl through untouched.
+        bind "Ctrl h" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
+                name "move_focus_or_tab"; payload "left";
+            };
+        }
+        bind "Ctrl j" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
+                name "move_focus"; payload "down";
+            };
+        }
+        bind "Ctrl k" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
+                name "move_focus"; payload "up";
+            };
+        }
+        bind "Ctrl l" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
+                name "move_focus_or_tab"; payload "right";
+            };
+        }
+    }
+}
