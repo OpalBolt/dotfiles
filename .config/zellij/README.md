@@ -2,8 +2,9 @@
 
 ```
 ~/.config/zellij/
-├── config.kdl        # kanagawa theme, no pane frames, Alt+1..9, Ctrl+hjkl nav
-├── zj.sh             # fzf session/layout picker (POSIX sh, portable)
+├── config.kdl        # kanagawa theme, focus frames, Alt+1..9, Ctrl+hjkl nav
+├── themes/           # theme overrides (auto-loaded by zellij)
+│   └── kanagawa.kdl  # builtin kanagawa + frame colors: bright blue = focus
 └── layouts/          # the session catalog — the files ARE the list
     ├── default.kdl   # bare `zellij` → slim tab bar on top + shell in ~/git
     └── homelab.kdl   # project example: 2 tabs, serve pane at 20%
@@ -11,10 +12,14 @@
 
 ## Look
 
-- Theme: builtin **kanagawa** (matches the kitty theme).
-- One-row compact tab bar at the **top**, nothing at the bottom, no pane
-  frames. Swap `compact-bar` → `tab-bar` in the layouts if you ever want
-  the new-tab button back; `pane_frames true` in config.kdl for borders.
+- Theme: builtin **kanagawa** with a frame override in `themes/kanagawa.kdl`
+  (kitty actually runs the *dragon* variant — frame colors are dragon-tinted).
+- One-row compact tab bar at the **top**, nothing at the bottom. Pane frames
+  are on, but unfocused frames are faint gray (`#434242` on dragon bg) and the
+  **focused pane gets a bright blue frame + title** (`#7fb4ca`) — that's how
+  you always know which pane is active. Hovering a frame flashes orange.
+  Swap `compact-bar` → `tab-bar` in the layouts if you ever want the new-tab
+  button back; `pane_frames false` in config.kdl to go fully frameless.
 
 ## Keys (on top of zellij defaults)
 
@@ -51,8 +56,8 @@ in your nvim config, **remove vim-tmux-navigator** and add:
 
 | Action | Command |
 |---|---|
-| Default session in `~/git` | `zellij` |
-| Fuzzy pick / switch sessions | `zj` (or `~/.config/zellij/zj.sh` anywhere) |
+| Default session in `~/git` | `zellij` — or `zj` when nothing is running yet |
+| Fuzzy pick / switch sessions | `zj` |
 | Direct launch | `zj` → type `homelab` → enter |
 | Built-in session manager | `Ctrl+o` then `w` (inside zellij) |
 
@@ -69,11 +74,6 @@ pane split_direction="vertical" { }     # nested split
 ```
 
 Full reference: `zellij setup --dump-layout default`.
-
-## Moving zj.sh elsewhere
-
-It's plain POSIX sh with one knob: `ZJ_LAYOUTS_DIR`. Update the path in
-`fish/functions/zj.fish` when you move it.
 
 ## tmux removal — done 2025, what's left to run
 

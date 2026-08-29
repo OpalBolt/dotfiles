@@ -1,9 +1,12 @@
 // ── zellij — everything not set here is a sane default ───────────────
+// Which pane is focused: the focused pane gets a bright blue frame (theme
+// override in themes/kanagawa.kdl); unfocused panes only a faint gray edge.
 // Session resurrection is ON by default (serialized ~every minute).
 // Full annotated reference: zellij setup --dump-config
 
 theme "kanagawa"                 // builtin — matches the kitty kanagawa theme
-pane_frames false                // no box around every pane (old tmux look)
+pane_frames true                 // frames ON but unfocused ones are near-invisible (see
+                                 // themes/kanagawa.kdl) → bright blue ring marks the focused pane
 
 keybinds {
     shared_except "locked" {
