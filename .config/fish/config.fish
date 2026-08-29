@@ -22,3 +22,6 @@ if not ssh-add -l >/dev/null 2>&1
     eval (ssh-agent -a $SSH_AUTH_SOCK -c) >/dev/null
     bw get item main-ssh | jq -r '.sshKey.privateKey' | ssh-add -t 12h -
 end
+
+# uv
+fish_add_path "/home/mads/.local/bin"
