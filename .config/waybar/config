@@ -1,7 +1,7 @@
 [
   {
     "backlight": {
-      "format": "{percent}% {icon}",
+      "format": "{icon}",
       "format-icons": [
         "",
         "",
@@ -14,58 +14,35 @@
         ""
       ]
     },
-    "battery#bat0": {
-      "bat": "BAT0",
-      "format": "BAT0:{capacity}% {icon}",
-      "format-alt": "BAT0:{time} {icon}",
-      "format-charging": "BAT0:{capacity}% 󱐋",
-      "format-icons": [
+    "battery": {
+        "bat": "BAT1",
+        "interval": 30,
+        "states": {
+            "warning": 20,
+            "critical": 10
+        },
+        "format": "{icon}",
+        "format-charging": "{capacity}% 󱐋",
+        "format-warning": "{capacity}% {icon}",
+        "format-critical": "{capacity}% {icon}",
+        "format-icons": [
         "",
         "",
         "",
         "",
         ""
       ],
-      "format-plugged": "BAT0:{capacity}% ",
-      "states": {
-        "critical": 15,
-        "warning": 30
-      }
-    },
-    "battery#bat1": {
-      "bat": "BAT1",
-      "format": "BAT1:{capacity}% {icon}",
-      "format-alt": "BAT1:{time} {icon}",
-      "format-charging": "BAT1:{capacity}% 󱐋",
-      "format-icons": [
-        "",
-        "",
-        "",
-        "",
-        ""
-      ],
-      "format-plugged": "BAT1:{capacity}% ",
-      "states": {
-        "critical": 15,
-        "warning": 30
-      }
     },
     "clock#default": {
-      "format": "{:%H:%M 󰥔 %d/%m %b %Y }",
+      "format": "{:%H:%M 󰥔 }",
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    },
-    "clock#extra1": {
-      "format": "{:%H:%M (JP)}",
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-      "timezone": "Asia/Tokyo"
-    },
-    "clock#extra2": {
-      "format": "{:%H:%M (NZ)}",
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-      "timezone": "Pacific/Auckland"
     },
     "custom/kernel": {
-      "exec": "echo \"󰣇 $(uname -r)\""
+      "exec": "$HOME/.config/waybar/icon.sh",
+      "return-type": "json",
+      "format": "{}",
+      "tooltip": true,
+      // "tooltip-format": "echo \"󰣇 $(uname -r)\"",
     },
     "height": 0,
     "idle_inhibitor": {
@@ -75,34 +52,38 @@
         "deactivated": "󰛊"
       }
     },
-    // "niri/workspaces": {
-    //   "format": "{icon}",
-    //   "format-icons": {
-    //     "active": "",
-    //     "default": ""
-    //   }
-    // },
     "niri/language": {
       "format": "{short}  "
     },
+
+    "custom/separator": {
+        "format": "|",
+        "interval": "once",
+        "tooltip": false
+    },
     "layer": "top",
-    "modules-center": [],
+    "modules-center": [
+      "clock#default",
+        ],
     "modules-left": [
       "niri/workspaces",
     ],
     "modules-right": [
-      "clock#default",
-      "clock#extra1",
-      "clock#extra2",
       "pulseaudio",
+      "custom/separator",
       "network",
+      "custom/separator",
       "backlight",
-      "battery#bat0",
-      "battery#bat1",
+      "custom/separator",
+      "battery",
+      "custom/separator",
       "niri/language",
+      "custom/separator",
       "language",
       "idle_inhibitor",
+      "custom/separator",
       "custom/kernel",
+      "custom/separator",
       "tray"
     ],
     "network": {
@@ -114,28 +95,28 @@
       "tooltip-format": "{gwaddr} via {ifname} 󰈀 "
     },
     "position": "top",
+
     "pulseaudio": {
-      "format": "{volume}% {icon} {format_source}",
-      "format-bluetooth": "{volume}% {icon} {format_source}",
-      "format-bluetooth-muted": "󰖁 {icon} {format_source}",
-      "format-icons": {
-        "car": "",
-        "default": [
-          "",
-          "",
-          ""
-        ],
-        "hands-free": "hands-free",
-        "headphone": "",
-        "headset": "headset",
-        "phone": "",
-        "portable": ""
-      },
-      "format-muted": "󰖁 {format_source}",
-      "format-source": "{volume}% ",
-      "format-source-muted": "",
-      "on-click": "pwvucontrol"
+        //"scroll-step": 1,
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": "",
+        "format-icons": {
+            "headphones": "",
+            "handsfree": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": [
+                "",
+                "",
+                ""
+            ],
+        },
+        "on-click": "pavucontrol"
     },
+
     "spacing": 1,
     "tray": {
       "spacing": 5
