@@ -1,0 +1,1 @@
+complete --command time-helper --no-files --arguments "(env _TIME_HELPER_COMPLETE=complete_fish _TYPER_COMPLETE_FISH_ACTION=get-args _TYPER_COMPLETE_ARGS=(commandline -cp) time-helper)" --condition "env _TIME_HELPER_COMPLETE=complete_fish _TYPER_COMPLETE_FISH_ACTION=is-args _TYPER_COMPLETE_ARGS=(commandline -cp) time-helper"

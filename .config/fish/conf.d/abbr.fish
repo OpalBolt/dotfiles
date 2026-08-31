@@ -6,7 +6,7 @@ abbr -a vim nvim
 abbr -a vi nvim
 
 # navigation (zoxide over cd)
-abbr -a cd z
+alias cd z
 
 # git
 abbr -a g git
@@ -18,7 +18,7 @@ abbr -a gs 'git status'
 if set -q WAYLAND_DISPLAY
     abbr -a c 'wl-copy --primary'
     abbr -a v 'wl-paste --primary'
-    abbr -a cx 'wl-copy'
+    abbr -a cx wl-copy
 else
     abbr -a c xclip
     abbr -a v 'xclip -o'
@@ -43,3 +43,7 @@ abbr -a dt 'bash ~/scripts/date.sh'
 # Stolen from: https://github.com/zanderhavgaard/dotfiles/blob/master/.aliases
 abbr -a sync_pacman_mirrors 'reflector --country Denmark,Sweden,Norway,Germany --fastest 10 --protocol https --verbose'
 abbr -a neofetch fastfetch
+
+# Timewarrior helper
+abbr -a th time-helper
+abbr -a tw timew
