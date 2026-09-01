@@ -61,6 +61,15 @@ window#waybar {
     color: @tertiary;
 }
 
+#mpris {
+    color: @on_surface;
+}
+
+#mpris.paused,
+#mpris.stopped {
+    color: alpha(@on_surface, .5);
+}
+
 #custom-separator {
     color: alpha(@on_surface, .3);
     font-size: 14px;

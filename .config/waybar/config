@@ -1,73 +1,14 @@
 [
   {
-    "backlight": {
-      "format": "{icon}",
-      "format-icons": [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-      ]
-    },
-    "battery": {
-        "bat": "BAT1",
-        "interval": 30,
-        "states": {
-            "warning": 20,
-            "critical": 10
-        },
-        "format": "{icon}",
-        "format-charging": "{capacity}% 󱐋",
-        "format-warning": "{capacity}% {icon}",
-        "format-critical": "{capacity}% {icon}",
-        "format-icons": [
-        "",
-        "",
-        "",
-        "",
-        ""
-      ],
-    },
-    "clock#default": {
-      "format": "{:%H:%M 󰥔 }",
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    },
-    "custom/kernel": {
-      "exec": "$HOME/.config/waybar/icon.sh",
-      "return-type": "json",
-      "format": "{}",
-      "tooltip": true,
-      // "tooltip-format": "echo \"󰣇 $(uname -r)\"",
-    },
-    "height": 0,
-    "idle_inhibitor": {
-      "format": "{icon}",
-      "format-icons": {
-        "activated": "󰅶",
-        "deactivated": "󰛊"
-      }
-    },
-    "niri/language": {
-      "format": "{short}  "
-    },
-
-    "custom/separator": {
-        "format": "|",
-        "interval": "once",
-        "tooltip": false
-    },
+    // -- Bar --------------------------------------------------
     "layer": "top",
-    "modules-center": [
-      "clock#default",
-        ],
-    "modules-left": [
-      "niri/workspaces",
-    ],
+    "position": "top",
+    "height": 0,
+    "spacing": 1,
+
+    // -- Layout -----------------------------------------------
+    "modules-left": ["niri/workspaces"],
+    "modules-center": ["clock#default", "mpris"],
     "modules-right": [
       "pulseaudio",
       "custom/separator",
@@ -79,13 +20,49 @@
       "custom/separator",
       "niri/language",
       "custom/separator",
-      "language",
       "idle_inhibitor",
       "custom/separator",
       "custom/kernel",
       "custom/separator",
       "tray"
     ],
+
+    // -- Center -----------------------------------------------
+    "clock#default": {
+      "format": "{:%H:%M 󰥔 }",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "mpris": {
+      "format": "|  {status_icon} {artist} • {title}",
+      "status-icons": {
+        "playing": "󰐊 ",
+        "paused": "󰏤 ",
+        "stopped": "󰓛 "
+      },
+      "artist-len": 25,
+      "title-len": 35,
+      "on-click": "playerctl play-pause",
+      "on-scroll-up": "playerctl next",
+      "on-scroll-down": "playerctl previous",
+      "tooltip-format": "{player}: {artist} - {title}"
+    },
+
+    // -- Right ------------------------------------------------
+    "pulseaudio": {
+      "format": "{volume}% {icon}",
+      "format-bluetooth": "{volume}% {icon}",
+      "format-muted": "",
+      "format-icons": {
+        "headphones": "",
+        "handsfree": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", "", ""]
+      },
+      "on-click": "pavucontrol"
+    },
     "network": {
       "format-alt": "{ifname}: {ipaddr}/{cidr}",
       "format-disconnected": "Disconnected ⚠",
@@ -94,30 +71,44 @@
       "format-wifi": "{essid} ({signalStrength}%) ",
       "tooltip-format": "{gwaddr} via {ifname} 󰈀 "
     },
-    "position": "top",
-
-    "pulseaudio": {
-        //"scroll-step": 1,
-        "format": "{volume}% {icon}",
-        "format-bluetooth": "{volume}% {icon}",
-        "format-muted": "",
-        "format-icons": {
-            "headphones": "",
-            "handsfree": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": [
-                "",
-                "",
-                ""
-            ],
-        },
-        "on-click": "pavucontrol"
+    "backlight": {
+      "format": "{icon}",
+      "format-icons": ["", "", "", "", "", "", "", "", ""]
     },
-
-    "spacing": 1,
+    "battery": {
+      "bat": "BAT1",
+      "interval": 30,
+      "states": {
+        "warning": 20,
+        "critical": 10
+      },
+      "format": "{icon}",
+      "format-charging": "{capacity}% 󱐋",
+      "format-warning": "{capacity}% {icon}",
+      "format-critical": "{capacity}% {icon}",
+      "format-icons": ["", "", "", "", ""]
+    },
+    "niri/language": {
+      "format": "{short}  "
+    },
+    "idle_inhibitor": {
+      "format": "{icon}",
+      "format-icons": {
+        "activated": "󰅶",
+        "deactivated": "󰛊"
+      }
+    },
+    "custom/kernel": {
+      "exec": "$HOME/.config/waybar/icon.sh",
+      "return-type": "json",
+      "format": "{}",
+      "tooltip": true
+    },
+    "custom/separator": {
+      "format": "|",
+      "interval": "once",
+      "tooltip": false
+    },
     "tray": {
       "spacing": 5
     }
