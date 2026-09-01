@@ -1,0 +1,42 @@
+# -- General ------------------------------------------------
+sort=-time
+layer=overlay
+anchor=top-right
+outer-margin=10
+margin=10
+padding=10
+
+width=350
+height=150
+border-size=2
+border-radius=10
+
+font=ubuntu Nerd Font 11
+markup=1
+icons=1
+max-icon-size=48
+icon-border-radius=8
+
+default-timeout=5000
+ignore-timeout=0
+max-history=100
+actions=1
+
+# -- Bindings -------------------------------------------------
+on-button-left=dismiss
+on-button-middle=exec makoctl menu -n "$id" -- wmenu -p 'Select action: '
+on-button-right=dismiss-all
+on-touch=dismiss
+
+# -- Colors -----------------------------------------------------
+# Static fallback defaults load first so mako always has valid colors,
+# even before matugen has run. The matugen-generated colors file is
+# included after, so any value it sets overrides the static default.
+include=~/.config/mako/static-colors
+
+# `colors` is (re)generated from templates/mako in
+# https://github.com/InioX/matugen-themes whenever matugen runs.
+# Point matugen's [templates.mako] output_path at
+# ~/.config/mako/colors and set its post_hook to `makoctl reload`
+# so mako picks up new colors automatically.
+include=~/.config/mako/colors

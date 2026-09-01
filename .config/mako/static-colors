@@ -1,0 +1,18 @@
+# Static fallback colors (not matugen-generated).
+# Ensures mako has sane colors even before matugen has ever run.
+# The matugen-generated ~/.config/mako/colors is included after this
+# file, so any value it sets overrides these defaults.
+
+background-color=#243338
+text-color=#b3cad4
+border-color=#344a52
+
+[mode=do-not-disturb]
+invisible=1
+on-notify=none
+
+[mode=silent]
+on-notify=none
+
+[urgency=high]
+border-color=#93000a

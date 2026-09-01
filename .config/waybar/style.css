@@ -1,3 +1,7 @@
+/* Static fallback palette, loaded first so waybar always has valid colors
+   even before matugen has ever run. colors.css (matugen-generated) is
+   imported after, so any color it defines overrides the static default. */
+@import "static-colors.css";
 @import "colors.css";
 
 * {
@@ -68,6 +72,15 @@ window#waybar {
 #mpris.paused,
 #mpris.stopped {
     color: alpha(@on_surface, .5);
+}
+
+#custom-notifications.paused {
+    color: @error;
+    text-shadow: 0px 0px 5px alpha(@error, .8);
+}
+
+#custom-notifications.active {
+    color: @on_surface;
 }
 
 #custom-separator {
