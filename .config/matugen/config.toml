@@ -2,7 +2,7 @@
 
 [config.wallpaper]
 # Whether to set the wallpaper or not
-set = true
+set = false
 
 # The base command to run for applying the wallpaper.
 # Keywords like {{ image }} or anything that works inside of hooks works here.
@@ -21,3 +21,8 @@ post_hook = 'pkill -SIGUSR2 waybar'
 input_path = '~/.config/matugen/mako'
 output_path = '~/.config/mako/colors'
 post_hook = 'makoctl reload'
+
+[templates.wezterm]
+input_path = '~/.config/matugen/wezterm_theme.toml'
+output_path = '~/.config/wezterm/colors/matugen_theme.toml'
+post_hook = 'touch ~/.config/wezterm/wezterm.lua'
