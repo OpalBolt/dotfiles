@@ -16,4 +16,5 @@ geometry=$(slurp -d)
 filepath="$screenshot_dir/$(date +%Y%m%d%H%M%S).png"
 
 grim -g "$geometry" - | satty --filename - --output-filename "$filepath" \
+    --copy-command wl-copy \
     --early-exit --actions-on-enter save-to-file
