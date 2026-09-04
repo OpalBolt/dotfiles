@@ -3,3 +3,7 @@ state.yml
 .config/waybar/colors.css
 .config/mako/colors
 .config/wezterm/colors
+.config/foot/foot-colors.ini
+.config/fuzzel/colors.ini
+/.config/matugen/generated/foot-colors.ini
+/.config/zellij/themes/matugen.kdl
