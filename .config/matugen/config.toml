@@ -26,3 +26,24 @@ post_hook = 'makoctl reload'
 input_path = '~/.config/matugen/wezterm_theme.toml'
 output_path = '~/.config/wezterm/colors/matugen_theme.toml'
 post_hook = 'touch ~/.config/wezterm/wezterm.lua'
+
+[templates.foot]
+input_path = '~/.config/matugen/foot-colors.ini'
+output_path = '~/.config/matugen/generated/foot-colors.ini'
+post_hook = '''
+  pkill -SIGUSR1 foot
+  ln -nfs "$HOME/.config/matugen/generated/foot-colors.ini" "$HOME/.config/foot/foot-colors.ini"
+  touch "$HOME/.config/foot/foot.ini" || :
+'''
+
+[templates.fuzzel]
+input_path = '~/.config/matugen/fuzzel.ini'
+output_path = '~/.config/fuzzel/colors.ini'
+
+[templates.zellij]
+input_path = '~/.config/matugen/zellij-theme.kdl.tera'
+output_path = '~/.config/zellij/themes/matugen.kdl'
+
+# Add this line to get hot-reloading. Without it, the new theme will only
+# appear on next start
+post_hook = 'touch ~/.config/zellij/config.kdl'
