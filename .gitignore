@@ -2,3 +2,4 @@ state.yml
 .config/nnn/plugins
 .config/waybar/colors.css
 .config/mako/colors
+.config/wezterm/colors
