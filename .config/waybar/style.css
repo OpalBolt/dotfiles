@@ -35,21 +35,55 @@ window#waybar {
     box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
 }
 
-#block, #clock, #workspaces, #battery, #cpu, #memory, #wireplumber {
+#block, #clock, #workspaces, #battery, #cpu, #memory, #wireplumber,
+#layout, #window, #language, #keymode, #bluetooth {
     color: @on_surface;
 }
 
-/* niri/workspaces uses focused / active / urgent classes on the button,
-   not the "empty" class that hyprland/workspaces has (hyprland keeps a
-   fixed set of persistent-workspaces; niri creates them dynamically, so
-   there's no dimmed-but-present "empty slot" concept to style here) */
+/* Dim when the adapter is off, glow @primary when a device is connected -
+   matches the "live state" treatment used for layout/keymode above. */
+#bluetooth.disabled,
+#bluetooth.off {
+    color: alpha(@on_surface, .3);
+}
+
+#bluetooth.connected {
+    color: @primary;
+    text-shadow: 0px 0px 5px alpha(@primary, .8);
+}
+
+/* mango/layout and mango/keymode surface the compositor's current mode
+   (tile/scroller/monocle, default/test keymap); treat them like the
+   workspaces module and use @primary so they read as "live state" rather
+   than static text. */
+#layout,
+#keymode {
+    color: @primary;
+    text-shadow: 0px 0px 5px alpha(@primary, .8);
+}
+
+#window {
+    color: alpha(@on_surface, .8);
+}
+
+/* mango/workspaces applies active / urgent / empty / current_output classes
+   to each tag button (see waybar's src/modules/mango/workspaces.cpp) -
+   "active" marks the tag currently viewed on that button's own monitor.
+   Three visual states: occupied tags (base rule, has client windows),
+   empty tags (dimmed, no windows), and the currently-viewed tag (@primary,
+   glowing) - listed in that order so active/urgent can override empty when
+   a viewed or urgent tag also happens to be empty. */
 #workspaces button {
     all: unset;
     padding: 0px 7px;
-    color: alpha(@on_surface, .5);
+    color: @on_surface;
 }
 
-#workspaces button.focused {
+#workspaces button.empty {
+    color: alpha(@on_surface, .3);
+}
+
+#workspaces button.active {
     color: @primary;
     text-shadow: 0px 0px 5px alpha(@primary, .8);
 }
@@ -83,7 +117,8 @@ window#waybar {
     color: @on_surface;
 }
 
-#custom-separator {
+#custom-separator,
+#custom-bt-separator {
     color: alpha(@on_surface, .3);
     font-size: 14px;
     padding: 0 2px;
