@@ -14,41 +14,18 @@
 daemonize
 show-failed-attempts
 ignore-empty-password
-
-clock
-timestr=%R
-datestr=%a, %e of %B
-
-grace=1
-grace-no-mouse
-grace-no-touch
-
-# Add current screenshot as wallpaper
-screenshots
+indicator-caps-lock
+disable-caps-lock-text
 
 # Add an image as a background
-# In my setup the current wallpaper (requires wallpaper scripts in /scripts)
-#image=~/.cache/current_wallpaper.jpg
+image=~/Pictures/backgrounds/a_body_of_water_with_rain_falling_on_it.jpg
 
-# Fade in time
-fade-in=0.2
-
-# Effect for background
-effect-blur=10x5
-#effect-greyscale
-#effect-pixelate=5
-
-# Show/Hide indicator circle
-indicator
 
 # smaller indicator
-indicator-radius=200
+indicator-radius=100
 
-# bigger indicator
-# indicator-radius=300
 
 indicator-thickness=15
-indicator-caps-lock
 
 # Define all colors
 
@@ -81,5 +58,4 @@ text-wrong-color=ffffff
 bs-hl-color=7FB4CA
 caps-lock-key-hl-color=D27E99
 caps-lock-bs-hl-color=7FB4CA
-disable-caps-lock-text
 text-caps-lock-color=DCD7BA
