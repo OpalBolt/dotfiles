@@ -4,7 +4,8 @@
 // Session resurrection is ON by default (serialized ~every minute).
 // Full annotated reference: zellij setup --dump-config
 
-theme "kanagawa"                 // builtin — matches the kitty kanagawa theme
+//theme "kanagawa"                 // builtin — matches the kitty kanagawa theme
+theme "matugen"
 pane_frames true                 // frames ON but unfocused ones are near-invisible (see
                                  // themes/kanagawa.kdl) → bright blue ring marks the focused pane
 
