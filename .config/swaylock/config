@@ -13,7 +13,6 @@
 
 daemonize
 show-failed-attempts
-ignore-empty-password
 indicator-caps-lock
 disable-caps-lock-text
 
