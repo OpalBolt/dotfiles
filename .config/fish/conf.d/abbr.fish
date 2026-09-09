@@ -40,6 +40,10 @@ abbr -a gle 'podman run --rm -v $PWD:/path docker.io/zricethezav/gitleaks:latest
 # system / dotfiles
 abbr -a stup 'stow --restow -v --dir=/home/$USER/git --target=/home/$USER dotfiles'
 abbr -a dt 'bash ~/scripts/date.sh'
+alias power-menu '$HOME/.config/fuzzel/scripts/power-menu.sh'
+alias wallpaper-menu '$HOME/.config/fuzzel/scripts/wallpaper-menu.sh'
+alias wallpaper-grid '$HOME/.config/fuzzel/scripts/wallpaper-grid-prototype.sh'
+alias wifi-menu '$HOME/.config/fuzzel/scripts/wifi-menu.sh'
 # Stolen from: https://github.com/zanderhavgaard/dotfiles/blob/master/.aliases
 abbr -a sync_pacman_mirrors 'reflector --country Denmark,Sweden,Norway,Germany --fastest 10 --protocol https --verbose'
 abbr -a neofetch fastfetch

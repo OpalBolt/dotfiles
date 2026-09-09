@@ -13,15 +13,7 @@ fzf --fish | source
 mise activate fish | source
 envoke shell-init --shell fish | source
 
-# one local agent per machine, reused across shells; never clobber a forwarded socket
-if test -z "$SSH_AUTH_SOCK"
-    set -gx SSH_AUTH_SOCK $HOME/.ssh/agent.sock
-end
-if not ssh-add -l >/dev/null 2>&1
-    rm -f $SSH_AUTH_SOCK
-    eval (ssh-agent -a $SSH_AUTH_SOCK -c) >/dev/null
-    bw get item main-ssh | jq -r '.sshKey.privateKey' | ssh-add -t 12h -
-end
+ensure_ssh_agent main-ssh work-ssh
 
 # uv
 fish_add_path "/home/mads/.local/bin"
