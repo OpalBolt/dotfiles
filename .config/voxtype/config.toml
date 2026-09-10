@@ -296,7 +296,7 @@ on_recording_start = false
 on_recording_stop = false
 
 # Show notification with transcribed text after transcription completes
-on_transcription = true
+on_transcription = false
 show_engine_icon = false
 
 # Notification urgency level: "low", "normal", or "critical".
@@ -430,35 +430,10 @@ icon_theme = "emoji"
 # transcribing = "⏳"
 # stopped = ""
 
-# Named profiles for context-specific post-processing.
-# Selected via `voxtype record toggle --profile <name>` (see
-# ~/.config/voxtype/scripts/toggle-with-profile.sh, which reads the profile
-# chosen from the fuzzel menu at ~/.config/fuzzel/scripts/voxtype-profile-menu.sh).
-# Every profile calls ~/.config/voxtype/scripts/process-profile.sh <name>,
-# which reads the profile's style note from
-# ~/.config/voxtype/profiles/<name>.txt, sends it as a system prompt to a
-# local Ollama model (except "raw", which passes text through unchanged),
-# and persists both the raw and processed text to
-# ~/.local/state/voxtype/ so ~/.config/fuzzel/scripts/voxtype-redo-menu.sh
-# can restore or reprocess the last dictation later.
-#
-# To add a new profile: drop a .txt file in ~/.config/voxtype/profiles/
-# with a short style note, then add a matching [profiles.<name>] stanza
-# below. It will automatically appear in both fuzzel menus. To tweak an
-# existing profile's behavior, just edit its .txt file -- nothing here or
-# in the scripts needs to change.
-
-[profiles.raw]
-post_process_command = "/home/mads/.config/voxtype/scripts/process-profile.sh raw"
-
-[profiles.default]
-post_process_command = "/home/mads/.config/voxtype/scripts/process-profile.sh default"
-
-[profiles.casual]
-post_process_command = "/home/mads/.config/voxtype/scripts/process-profile.sh casual"
-
-[profiles.formal]
-post_process_command = "/home/mads/.config/voxtype/scripts/process-profile.sh formal"
-
-[profiles.code]
-post_process_command = "/home/mads/.config/voxtype/scripts/process-profile.sh code"
+# Raw dictation now routes through a single blocking post-process popup that
+# can insert, edit, copy, or cancel the transcript.
+[output.post_process]
+command = "/home/mads/.config/voxtype/scripts/post-process.sh"
+timeout_ms = 600000
+trim = true
+fallback_on_empty = false

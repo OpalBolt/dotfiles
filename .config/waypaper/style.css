@@ -1,0 +1,135 @@
+@import url("../waybar/static-colors.css");
+@import url("../waybar/colors.css");
+
+* {
+    font-family: "ubuntu Nerd Font";
+    font-size: 12px;
+}
+
+window {
+    color: @on_surface;
+    background-color: alpha(@surface, 0.94);
+}
+
+box {
+    color: @on_surface;
+}
+
+button,
+entry,
+combobox,
+combobox button {
+    min-height: 28px;
+    padding: 4px 10px;
+    color: @on_surface;
+    background-color: alpha(@surface_container, 0.86);
+    background-image: none;
+    border: 1px solid alpha(@outline, 0.24);
+    border-radius: 8px;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+button:hover,
+combobox button:hover {
+    color: @on_primary_container;
+    background-color: alpha(@primary_container, 0.72);
+    border-color: alpha(@primary, 0.65);
+}
+
+button:active,
+button:checked,
+combobox button:active {
+    color: @on_primary;
+    background-color: @primary;
+    border-color: @primary;
+}
+
+entry {
+    caret-color: @primary;
+}
+
+entry:focus {
+    border-color: @primary;
+    box-shadow: 0 0 0 1px alpha(@primary, 0.5);
+}
+
+entry selection {
+    color: @on_primary;
+    background-color: @primary;
+}
+
+scrolledwindow {
+    margin: 4px 12px 10px;
+    padding: 8px;
+    background-color: alpha(@surface_container_lowest, 0.45);
+    border: 1px solid alpha(@outline_variant, 0.45);
+    border-radius: 12px;
+}
+
+grid > button {
+    min-width: 240px;
+    min-height: 150px;
+    margin: 5px;
+    padding: 3px;
+    background-color: alpha(@surface_container_high, 0.5);
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+
+grid > button:hover {
+    background-color: alpha(@primary_container, 0.35);
+    border-color: alpha(@primary, 0.7);
+}
+
+grid > button image {
+    border-radius: 8px;
+}
+
+.highlighted-button,
+.highlighted-button:hover {
+    background-color: alpha(@primary_container, 0.55);
+    border: 2px solid @primary;
+    box-shadow: 0 0 8px alpha(@primary, 0.55);
+}
+
+menu {
+    padding: 6px;
+    color: @on_surface;
+    background-color: @surface_container;
+    border: 1px solid alpha(@outline, 0.4);
+    border-radius: 8px;
+}
+
+menuitem {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+menuitem:hover {
+    color: @on_primary_container;
+    background-color: @primary_container;
+}
+
+scrollbar {
+    background: transparent;
+}
+
+scrollbar slider {
+    min-width: 6px;
+    min-height: 36px;
+    background-color: alpha(@on_surface, 0.25);
+    border: 0;
+    border-radius: 999px;
+}
+
+scrollbar slider:hover {
+    background-color: alpha(@primary, 0.7);
+}
+
+tooltip {
+    color: @on_surface;
+    background-color: @surface_container_high;
+    border: 1px solid alpha(@outline, 0.4);
+    border-radius: 8px;
+}
