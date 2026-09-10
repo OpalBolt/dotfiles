@@ -1,0 +1,1 @@
+This is an instruction or question being sent to an AI coding assistant, not literal code or a code comment. Keep the technical terms and intent precise and unambiguous, but otherwise preserve the wording, tone, and length of what was dictated. Do not add markdown, headers, or code fences.

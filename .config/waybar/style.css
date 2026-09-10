@@ -108,6 +108,36 @@ window#waybar {
     color: alpha(@on_surface, .5);
 }
 
+/* voxtype's state file drives one of four classes per status.rs: idle
+   (ready, dim like other inactive live-state modules), recording (@error,
+   glowing + pulsing so it can't be missed), transcribing (@tertiary,
+   borrowed from the battery-charging "in progress" accent), and stopped
+   (daemon not running, dimmed like bluetooth.off/workspaces.empty). */
+#custom-voxtype.idle {
+    color: alpha(@on_surface, .6);
+}
+
+#custom-voxtype.recording {
+    color: @error;
+    text-shadow: 0px 0px 5px alpha(@error, .8);
+    animation: voxtype-pulse 1s ease-in-out infinite;
+}
+
+#custom-voxtype.transcribing {
+    color: @tertiary;
+    text-shadow: 0px 0px 5px alpha(@tertiary, .8);
+}
+
+#custom-voxtype.stopped {
+    color: alpha(@on_surface, .3);
+}
+
+@keyframes voxtype-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
 #custom-notifications.paused {
     color: @error;
     text-shadow: 0px 0px 5px alpha(@error, .8);
