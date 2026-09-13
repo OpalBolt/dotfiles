@@ -107,8 +107,30 @@ read_pending_client_id() {
     printf '%s\n' "$pending_client_id"
 }
 
+post_process_running() {
+    post_process_lock_dir="$state_dir/post-process.lock"
+    [ -d "$post_process_lock_dir" ] || return 1
+    lock_pid=$(cat "$post_process_lock_dir/pid" 2>/dev/null || true)
+    case "$lock_pid" in
+        ''|*[!0-9]*)
+            return 1
+            ;;
+    esac
+    kill -0 "$lock_pid" 2>/dev/null
+}
+
 start_recording() {
-    [ ! -e "$state_file" ] || fail 'pending recording target already exists'
+    if [ -e "$state_file" ]; then
+        if post_process_running; then
+            fail 'a previous dictation is still being reviewed; finish or cancel it first'
+        fi
+        # post-process.sh normally removes this file once a dictation is
+        # reviewed. If it never ran (e.g. empty/silent transcript) or was
+        # killed before it could clean up, the file is orphaned and the
+        # review popup is not active, so it is safe to clear and continue.
+        log_error 'clearing stale pending recording target left by an interrupted or skipped review'
+        rm -f "$state_file"
+    fi
     client_id=$(read_focused_client_id)
     write_pending_state "$client_id"
 

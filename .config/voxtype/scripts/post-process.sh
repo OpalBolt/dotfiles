@@ -4,7 +4,10 @@ set -eu
 umask 077
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+history_script="$script_dir/history.sh"
 controller_script="$script_dir/controller.sh"
+
+. "$history_script"
 
 state_root=${XDG_RUNTIME_DIR:-$HOME/.local/state}
 state_dir="$state_root/voxtype"
@@ -12,7 +15,6 @@ pending_target_file="$state_dir/pending-recording-target.json"
 lock_dir="$state_dir/post-process.lock"
 log_file="$state_dir/post-process.log"
 failure_meta_file="$state_dir/last-failure.txt"
-failure_raw_file="$state_dir/last-failure.raw"
 
 raw_text=
 pending_client_id=
@@ -30,6 +32,8 @@ last_candidate=
 selected_profile=
 last_named_profile=
 candidate_state=unknown
+workflow_history_record_file=
+history_record_path_file=
 
 mkdir -p "$state_dir" || {
     printf '%s\n' "post-process.sh: unable to create state directory: $state_dir" >&2
@@ -78,6 +82,14 @@ cleanup() {
 
 trap cleanup EXIT HUP INT TERM
 
+write_file_atomic() {
+    file=$1
+    content=$2
+    tmp_file="$file.$$"
+    printf '%s' "$content" >"$tmp_file" || fail "unable to write file: $file"
+    mv "$tmp_file" "$file" || fail "unable to update file: $file"
+}
+
 record_failure_evidence() {
     reason=$1
     detail=${2:-}
@@ -91,9 +103,38 @@ record_failure_evidence() {
         printf 'selected_profile=%s\n' "${selected_profile:-}"
         printf 'last_named_profile=%s\n' "${last_named_profile:-}"
     } >"$failure_meta_file" 2>/dev/null || true
-    if [ -n "${raw_text:-}" ]; then
-        printf '%s' "$raw_text" >"$failure_raw_file" 2>/dev/null || true
+}
+
+# spill: keep candidate resolution consistent for follow-up/editor outcomes.
+resolve_candidate_text() {
+    if [ -n "${last_candidate:-}" ]; then
+        printf '%s' "$last_candidate"
+    else
+        cat "$candidate_file"
     fi
+}
+
+# spill: preserve safe delivery when a reviewed candidate loses its target.
+clipboard_fallback() {
+    candidate_text=$1
+    reason=$2
+    detail=$3
+    log_message=$4
+    notify_message=$5
+
+    if ! printf '%s' "$candidate_text" | wl-copy; then
+        fail 'unable to copy candidate text after original Mango client disappeared'
+    fi
+
+    last_action=missing-target-copy
+    record_failure_evidence "$reason" "$detail"
+    log_error "$log_message"
+    notify_error "$notify_message"
+    remove_pending_target
+    if [ -n "${active_history_record_file:-}" ]; then
+        voxtype_history_update_accepted_final_text "$active_history_record_file" "$candidate_text"
+    fi
+    handled=yes
 }
 
 add_missing() {
@@ -173,6 +214,7 @@ write_session_files() {
     candidate_file="$session_dir/candidate.txt"
     outcome_file="$session_dir/outcome.json"
     popup_stderr="$session_dir/popup.stderr"
+    history_record_path_file="$session_dir/history-record-path.txt"
 
     printf '%s' "$raw_text" >"$raw_file" || fail 'unable to write raw transcript file'
     printf '%s' "$raw_text" >"$candidate_file" || fail 'unable to write candidate transcript file'
@@ -187,9 +229,21 @@ read_outcome_field() {
     jq -re "$field" <"$outcome_file"
 }
 
-popup_visible() {
-    clients_json=$(mmsg get clients 2>/dev/null) || return 1
-    printf '%s' "$clients_json" | jq -e '.. | objects | select((.app_id? // .appId? // .appid? // .title? // empty) == "voxtype-popup")' >/dev/null 2>&1
+# spill: reviewed text must never be typed when popup visibility is unknown.
+ensure_popup_closed() {
+    clients_json=$(mmsg get all-clients 2>/dev/null) || fail 'unable to confirm voxtype popup closed'
+    popup_check_status=0
+    printf '%s' "$clients_json" | jq -e 'any(.. | objects; ((.app_id? // .appId? // .appid? // .title? // empty) == "voxtype-popup"))' >/dev/null 2>&1 || popup_check_status=$?
+    case "$popup_check_status" in
+        0)
+            fail 'voxtype popup still visible after controller exit'
+            ;;
+        1)
+            ;;
+        *)
+            fail 'unable to confirm voxtype popup closed'
+            ;;
+    esac
 }
 
 launch_controller_with_terminal() {
@@ -206,6 +260,7 @@ launch_controller_with_terminal() {
         VOXTYPE_CANDIDATE_FILE="$candidate_file" \
         VOXTYPE_OUTCOME_FILE="$outcome_file" \
         VOXTYPE_SESSION_DIR="$session_dir" \
+        VOXTYPE_HISTORY_RECORD_FILE="$workflow_history_record_file" \
         "$controller_script" 2>"$terminal_stderr"
 }
 
@@ -215,7 +270,7 @@ launch_popup() {
             return 0
         fi
 
-        if grep -Eqi 'connect|connection refused|could not connect|failed to connect|server socket' "$popup_stderr" 2>/dev/null; then
+        if grep -Eqi 'connection refused|could not connect|failed to connect|server socket' "$popup_stderr" 2>/dev/null; then
             : # fall through to foot
         else
             return 1
@@ -249,11 +304,7 @@ prepare_input() {
 }
 
 process_insert() {
-    if [ -n "${last_candidate:-}" ]; then
-        candidate_text=$last_candidate
-    else
-        candidate_text=$(cat "$candidate_file")
-    fi
+    candidate_text=$(resolve_candidate_text)
     candidate_state=raw
     if [ "$candidate_text" != "$raw_text" ]; then
         candidate_state=edited
@@ -268,45 +319,38 @@ process_insert() {
     fi
 
     if ! mmsg get client "$pending_client_id" >/dev/null 2>&1; then
-        if printf '%s' "$candidate_text" | wl-copy; then
-            last_action=missing-target-copy
-            record_failure_evidence 'original Mango client disappeared before insertion' 'copy fallback'
-            log_error 'original Mango client disappeared before insertion; copied candidate to clipboard'
-            notify_error 'original Mango client disappeared before insertion; copied candidate to clipboard'
-            remove_pending_target
-            handled=yes
-            return 0
-        fi
-        fail 'unable to copy candidate text after original Mango client disappeared'
+        clipboard_fallback \
+            "$candidate_text" \
+            'original Mango client disappeared before insertion' \
+            'copy fallback' \
+            'original Mango client disappeared before insertion; copied candidate to clipboard' \
+            'original Mango client disappeared before insertion; copied candidate to clipboard'
+        return 0
     fi
 
     if ! mmsg dispatch focusid "client,$pending_client_id" >/dev/null 2>&1; then
-        if printf '%s' "$candidate_text" | wl-copy; then
-            last_action=missing-target-copy
-            record_failure_evidence 'original Mango client disappeared before focus restoration' 'copy fallback'
-            log_error 'original Mango client disappeared before focus restoration; copied candidate to clipboard'
-            notify_error 'original Mango client disappeared before focus restoration; copied candidate to clipboard'
-            remove_pending_target
-            handled=yes
-            return 0
-        fi
-        fail "unable to focus Mango client $pending_client_id"
+        clipboard_fallback \
+            "$candidate_text" \
+            'original Mango client disappeared before focus restoration' \
+            'copy fallback' \
+            'original Mango client disappeared before focus restoration; copied candidate to clipboard' \
+            'original Mango client disappeared before focus restoration; copied candidate to clipboard'
+        return 0
     fi
 
-    if ! wtype "$candidate_text"; then
+    if ! wtype -- "$candidate_text"; then
         fail 'wtype failed while inserting candidate text'
     fi
 
     remove_pending_target
+    if [ -n "${active_history_record_file:-}" ]; then
+        voxtype_history_update_accepted_final_text "$active_history_record_file" "$candidate_text"
+    fi
     handled=yes
 }
 
 process_copy() {
-    if [ -n "${last_candidate:-}" ]; then
-        candidate_text=$last_candidate
-    else
-        candidate_text=$(cat "$candidate_file")
-    fi
+    candidate_text=$(resolve_candidate_text)
     candidate_state=raw
     if [ "$candidate_text" != "$raw_text" ]; then
         candidate_state=edited
@@ -325,6 +369,9 @@ process_copy() {
     fi
 
     remove_pending_target
+    if [ -n "${active_history_record_file:-}" ]; then
+        voxtype_history_update_accepted_final_text "$active_history_record_file" "$candidate_text"
+    fi
     handled=yes
 }
 
@@ -337,8 +384,12 @@ main() {
     acquire_lock
     prepare_input
     check_dependencies
-    read_pending_target
+    voxtype_history_purge_old_records
     write_session_files
+    workflow_history_record_file=$(voxtype_history_create_record "$raw_text" '')
+    write_file_atomic "$history_record_path_file" "$workflow_history_record_file"
+    active_history_record_file=$workflow_history_record_file
+    read_pending_target
 
     if ! launch_popup; then
         record_failure_evidence 'terminal popup failed before the controller completed' "$(cat "$popup_stderr" 2>/dev/null || true)"
@@ -387,12 +438,15 @@ main() {
             ;;
     esac
     candidate_state=$(read_outcome_field '.candidate_state // "unknown"') || candidate_state=unknown
-
-    if popup_visible; then
-        record_failure_evidence 'voxtype-popup client was still visible after the controller exited' ''
-        remove_pending_target
-        fail 'voxtype popup still visible after controller exit'
+    if [ -f "$history_record_path_file" ]; then
+        active_history_record_file=$(cat "$history_record_path_file" 2>/dev/null || true)
     fi
+    [ -n "${active_history_record_file:-}" ] || active_history_record_file=$workflow_history_record_file
+    if [ -n "$last_named_profile" ]; then
+        voxtype_history_update_last_named_profile "$active_history_record_file" "$last_named_profile"
+    fi
+
+    ensure_popup_closed
 
     case "$last_action" in
         insert)

@@ -430,8 +430,7 @@ icon_theme = "emoji"
 # transcribing = "⏳"
 # stopped = ""
 
-# Raw dictation now routes through a single blocking post-process popup that
-# can insert, edit, copy, or cancel the transcript.
+# Dictation routes through one blocking interactive review workflow.
 [output.post_process]
 command = "/home/mads/.config/voxtype/scripts/post-process.sh"
 timeout_ms = 600000

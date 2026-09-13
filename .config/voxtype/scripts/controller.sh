@@ -9,11 +9,25 @@ outcome_file=${VOXTYPE_OUTCOME_FILE:?VOXTYPE_OUTCOME_FILE is required}
 session_dir=${VOXTYPE_SESSION_DIR:?VOXTYPE_SESSION_DIR is required}
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+history_script="$script_dir/history.sh"
 process_profile_script="$script_dir/process-profile.sh"
 profile_state_file="$session_dir/current-named-profile.txt"
+history_record_path_file="$session_dir/history-record-path.txt"
 preview_profiles_dir=${VOXTYPE_PROFILES_DIR:-$HOME/.config/voxtype/profiles}
+editor_file=
+history_record_file=${VOXTYPE_HISTORY_RECORD_FILE:-}
+
+. "$history_script"
 
 export PROFILES_DIR="$preview_profiles_dir"
+
+cleanup() {
+    if [ -n "${editor_file:-}" ]; then
+        rm -f "$editor_file" 2>/dev/null || true
+    fi
+}
+
+trap cleanup EXIT HUP INT TERM
 
 fail() {
     printf '%s\n' "controller.sh: $1" >&2
@@ -56,6 +70,20 @@ profile_label() {
     esac
 }
 
+editor_command() {
+    if [ -n "${VISUAL:-}" ]; then
+        printf '%s\n' "$VISUAL"
+        return 0
+    fi
+
+    if [ -n "${EDITOR:-}" ]; then
+        printf '%s\n' "$EDITOR"
+        return 0
+    fi
+
+    return 1
+}
+
 validate_profile() {
     case $1 in
         default|casual|formal|code) return 0 ;;
@@ -78,6 +106,35 @@ write_current_profile() {
     tmp_file="$profile_state_file.$$"
     printf '%s\n' "$profile" >"$tmp_file" || fail 'unable to write profile state'
     mv "$tmp_file" "$profile_state_file" || fail 'unable to update profile state'
+}
+
+read_history_record_file() {
+    if [ -f "$history_record_path_file" ]; then
+        history_record_file=$(cat "$history_record_path_file" 2>/dev/null || true)
+    fi
+    if [ -z "${history_record_file:-}" ] && [ -n "${VOXTYPE_HISTORY_RECORD_FILE:-}" ]; then
+        history_record_file=$VOXTYPE_HISTORY_RECORD_FILE
+    fi
+}
+
+write_history_record_file() {
+    record_file=$1
+    history_record_file=$record_file
+    tmp_file="$history_record_path_file.$$"
+    printf '%s\n' "$record_file" >"$tmp_file" || fail 'unable to update history record path'
+    mv "$tmp_file" "$history_record_path_file" || fail 'unable to update history record path'
+}
+
+update_history_last_named_profile() {
+    profile=$1
+    [ -n "${history_record_file:-}" ] || return 0
+    voxtype_history_update_last_named_profile "$history_record_file" "$profile"
+}
+
+update_history_accepted_final_text() {
+    candidate_text=$1
+    [ -n "${history_record_file:-}" ] || return 0
+    voxtype_history_update_accepted_final_text "$history_record_file" "$candidate_text"
 }
 
 candidate_state() {
@@ -127,6 +184,11 @@ finish() {
     state=$3
     selected_profile=${4:-}
     last_named_profile=${5:-}
+    case "$action" in
+        insert|copy)
+            update_history_accepted_final_text "$candidate"
+            ;;
+    esac
     write_outcome "$action" "$candidate" "$state" "$selected_profile" "$last_named_profile"
     exit 0
 }
@@ -138,6 +200,8 @@ main_menu() {
             'Transform with Casual' \
             'Transform with Formal' \
             'Transform as Code' \
+            'Recover recent dictation' \
+            'Clear history' \
             'Insert raw' \
             'Edit raw' \
             'Copy raw' \
@@ -156,13 +220,24 @@ main_menu() {
 
 review_success_menu() {
     header=$1
+    menu_items='Insert
+Apply another named profile
+Enter a standalone follow-up instruction
+Reset to raw
+Copy
+Discard'
+    if editor_command >/dev/null 2>&1; then
+        menu_items='Insert
+Apply another named profile
+Enter a standalone follow-up instruction
+Reset to raw
+Copy
+Open in external editor
+Discard'
+    fi
+
     selection=$(
-        printf '%s\n' \
-            'Insert' \
-            'Apply another named profile' \
-            'Reset to raw' \
-            'Copy' \
-            'Discard' |
+        printf '%s\n' "$menu_items" |
             fzf \
                 --height=10 \
                 --layout=reverse \
@@ -174,6 +249,69 @@ review_success_menu() {
     ) || selection=
 
     printf '%s\n' "$selection"
+}
+
+prompt_follow_up_instruction() {
+    header=$1
+    instruction=$(
+        gum write \
+            --height=10 \
+            --header="$header" \
+            --placeholder='Enter a follow-up instruction' \
+            --show-cursor-line \
+            --show-line-numbers
+    ) || instruction=
+
+    trimmed_is_empty "$instruction" && return 1
+
+    printf '%s\n' "$instruction"
+}
+
+open_external_editor() {
+    editor_cmd=$(editor_command) || return 1
+    editor_file="$session_dir/external-editor.$$.txt"
+    cp "$candidate_file" "$editor_file" || {
+        printf '%s\n' 'Unable to prepare the external editor file.' >&2
+        editor_file=
+        return 1
+    }
+
+    (
+        set -f
+        set -- $editor_cmd
+        [ "$#" -gt 0 ] || exit 127
+        command -v "$1" >/dev/null 2>&1 || exit 127
+        "$@" "$editor_file"
+    ) || {
+        printf '%s\n' "External editor failed; keeping the previous candidate." >&2
+        rm -f "$editor_file" 2>/dev/null || true
+        editor_file=
+        return 1
+    }
+
+    [ -f "$editor_file" ] || {
+        printf '%s\n' "External editor removed its file; keeping the previous candidate." >&2
+        rm -f "$editor_file" 2>/dev/null || true
+        editor_file=
+        return 1
+    }
+
+    edited_candidate=$(cat "$editor_file") || {
+        printf '%s\n' "Unable to read the external editor result; keeping the previous candidate." >&2
+        rm -f "$editor_file" 2>/dev/null || true
+        editor_file=
+        return 1
+    }
+    if trimmed_is_empty "$edited_candidate"; then
+        printf '%s\n' "External editor returned empty text; keeping the previous candidate." >&2
+        rm -f "$editor_file" 2>/dev/null || true
+        editor_file=
+        return 1
+    fi
+
+    write_file_atomic "$candidate_file" "$edited_candidate"
+    rm -f "$editor_file" 2>/dev/null || true
+    editor_file=
 }
 
 failure_menu() {
@@ -193,6 +331,76 @@ failure_menu() {
     ) || selection=
 
     printf '%s\n' "$selection"
+}
+
+choose_history_record() {
+    history_rows=$(
+        voxtype_history_list_records |
+            while IFS= read -r record_file; do
+                voxtype_history_record_row "$record_file"
+            done
+    )
+
+    [ -n "$history_rows" ] || return 1
+
+    selection=$(
+        printf '%s\n' "$history_rows" |
+            fzf \
+                --height=10 \
+                --layout=reverse \
+                --border \
+                --prompt='Recover> ' \
+                --header='Select a recent dictation to recover' \
+                --delimiter="$(printf '\t')" \
+                --with-nth=2,3,4,5 \
+                --preview='record_file=$(printf %s {1} | cut -f1); cat "$record_file"' \
+                --preview-window='right,wrap,60%'
+    ) || selection=
+
+    case "$selection" in
+        '')
+            return 1
+            ;;
+        *)
+            printf '%s\n' "$selection" | cut -f1
+            ;;
+    esac
+}
+
+clear_history_confirmation() {
+    gum confirm \
+        --default=false \
+        'Clear all recoverable VoxType history?' \
+        >/dev/null 2>&1
+}
+
+recover_history_record() {
+    record_file=$1
+    if ! voxtype_history_validate_record "$record_file"; then
+        printf '%s\n' "controller.sh: cannot recover invalid history record: $record_file" >&2
+        return 1
+    fi
+
+    raw_text=$(jq -r '.raw // empty' <"$record_file" 2>/dev/null || true)
+    [ -n "$raw_text" ] || return 1
+
+    candidate_text=$(jq -r '.accepted_final_text // .raw // empty' <"$record_file" 2>/dev/null || true)
+    [ -n "$candidate_text" ] || candidate_text=$raw_text
+    recovered_profile=$(jq -r '.last_named_profile // empty' <"$record_file" 2>/dev/null || true)
+
+    write_file_atomic "$raw_file" "$raw_text"
+    write_file_atomic "$candidate_file" "$candidate_text"
+
+    if [ -n "$recovered_profile" ] &&
+        voxtype_history_valid_profile "$recovered_profile"; then
+        write_current_profile "$recovered_profile"
+        current_profile=$recovered_profile
+    else
+        rm -f "$profile_state_file" 2>/dev/null || true
+        current_profile=
+    fi
+
+    write_history_record_file "$record_file"
 }
 
 edit_candidate() {
@@ -220,129 +428,164 @@ reset_candidate_to_raw() {
     mv "$tmp_file" "$candidate_file" || fail 'unable to reset candidate to raw'
 }
 
-run_transform() {
-    profile=$1
-    profile_title=$(profile_label "$profile") || fail "unknown profile: $profile"
+run_transform_command() {
+    transform_kind=$1
+    transform_value=$2
+    transform_title=$3
     output_file="$session_dir/transform.out"
     error_file="$session_dir/transform.err"
 
-    if gum spin --title="Transforming with $profile_title" --show-error -- sh -c '
+    if gum spin --title="Transforming with $transform_title" --show-error -- sh -c '
         set -eu
         process_profile_script=$1
-        profile=$2
-        input_file=$3
-        output_file=$4
-        error_file=$5
-        "$process_profile_script" "$profile" <"$input_file" >"$output_file" 2>"$error_file"
-    ' sh "$process_profile_script" "$profile" "$candidate_file" "$output_file" "$error_file"; then
+        transform_kind=$2
+        transform_value=$3
+        input_file=$4
+        output_file=$5
+        error_file=$6
+        case "$transform_kind" in
+            profile)
+                "$process_profile_script" "$transform_value" <"$input_file" >"$output_file" 2>"$error_file"
+                ;;
+            follow-up)
+                "$process_profile_script" --follow-up "$transform_value" <"$input_file" >"$output_file" 2>"$error_file"
+                ;;
+            *)
+                exit 2
+                ;;
+        esac
+    ' sh "$process_profile_script" "$transform_kind" "$transform_value" "$candidate_file" "$output_file" "$error_file"; then
         transformed_candidate=$(cat "$output_file" 2>/dev/null || true)
         if trimmed_is_empty "$transformed_candidate"; then
             error_text=
             if [ -s "$error_file" ]; then
                 error_text=$(cat "$error_file")
             fi
-            handle_transform_failure "$profile" "$error_text"
+            handle_transform_failure "$transform_kind" "$transform_value" "$transform_title" "$error_text"
             return 0
         fi
 
         write_file_atomic "$candidate_file" "$transformed_candidate"
-        write_current_profile "$profile"
-        current_profile=$profile
-        needs_editor=yes
-        while :; do
-            if [ "$needs_editor" = yes ]; then
-                edit_candidate "Review transformed text ($profile_title)"
-                needs_editor=no
-            fi
-            review_choice=$(review_success_menu "Review transformed text ($profile_title)")
-            case "$review_choice" in
-                Insert)
-                    finish insert "$(read_file "$candidate_file")" "$(candidate_state)" "$profile" "$profile"
-                    ;;
-                'Apply another named profile')
-                    if next_profile=$(choose_profile); then
-                        profile=$next_profile
-                        profile_title=$(profile_label "$profile") || fail "unknown profile: $profile"
-                        output_file="$session_dir/transform.out"
-                        error_file="$session_dir/transform.err"
-                        if gum spin --title="Transforming with $profile_title" --show-error -- sh -c '
-                            set -eu
-                            process_profile_script=$1
-                            profile=$2
-                            input_file=$3
-                            output_file=$4
-                            error_file=$5
-                            "$process_profile_script" "$profile" <"$input_file" >"$output_file" 2>"$error_file"
-                        ' sh "$process_profile_script" "$profile" "$candidate_file" "$output_file" "$error_file"; then
-                            transformed_candidate=$(cat "$output_file" 2>/dev/null || true)
-                            if trimmed_is_empty "$transformed_candidate"; then
-                                error_text=
-                                if [ -s "$error_file" ]; then
-                                    error_text=$(cat "$error_file")
-                                fi
-                                handle_transform_failure "$profile" "$error_text"
-                                return 0
-                            fi
-                            write_file_atomic "$candidate_file" "$transformed_candidate"
-                            write_current_profile "$profile"
-                            current_profile=$profile
-                            needs_editor=yes
-                            continue
-                        fi
-                        error_text=$(cat "$error_file" 2>/dev/null || true)
-                        handle_transform_failure "$profile" "$error_text"
-                        return 0
-                    fi
-                    ;;
-                'Reset to raw')
-                    reset_candidate_to_raw
-                    return 0
-                    ;;
-                Copy)
-                    finish copy "$(read_file "$candidate_file")" "$(candidate_state)" "$profile" "$profile"
-                    ;;
-                Discard|'')
-                    return 0
-                    ;;
-                *)
-                    return 0
-                    ;;
-            esac
-        done
+        case "$transform_kind" in
+            profile)
+                write_current_profile "$transform_value"
+                current_profile=$transform_value
+                update_history_last_named_profile "$transform_value"
+                ;;
+        esac
+        run_review_loop "$transform_kind" "$transform_value" "$transform_title"
+        return 0
     fi
 
     error_text=$(cat "$error_file" 2>/dev/null || true)
-    handle_transform_failure "$profile" "$error_text"
+    handle_transform_failure "$transform_kind" "$transform_value" "$transform_title" "$error_text"
+}
+
+run_review_loop() {
+    transform_kind=$1
+    transform_value=$2
+    transform_title=$3
+    needs_editor=yes
+
+    while :; do
+        if [ "$needs_editor" = yes ]; then
+            edit_candidate "Review transformed text ($transform_title)"
+            needs_editor=no
+        fi
+
+        review_choice=$(review_success_menu "Review transformed text ($transform_title)")
+        case "$review_choice" in
+            Insert)
+                finish insert "$(read_file "$candidate_file")" "$(candidate_state)" "${current_profile:-}" "${current_profile:-}"
+                ;;
+            'Apply another named profile')
+                if next_profile=$(choose_profile); then
+                    run_transform_command profile "$next_profile" "$(profile_label "$next_profile")"
+                    return 0
+                fi
+                ;;
+            'Enter a standalone follow-up instruction')
+                if follow_up_instruction=$(prompt_follow_up_instruction "Follow-up instruction for $transform_title"); then
+                    run_transform_command follow-up "$follow_up_instruction" 'Follow-up instruction'
+                    return 0
+                fi
+                ;;
+            'Reset to raw')
+                reset_candidate_to_raw
+                return 0
+                ;;
+            Copy)
+                finish copy "$(read_file "$candidate_file")" "$(candidate_state)" "${current_profile:-}" "${current_profile:-}"
+                ;;
+            'Open in external editor')
+                open_external_editor || true
+                ;;
+            Discard|'')
+                return 0
+                ;;
+            *)
+                return 0
+                ;;
+        esac
+    done
+}
+
+run_transform() {
+    profile=$1
+    profile_title=$(profile_label "$profile") || fail "unknown profile: $profile"
+    run_transform_command profile "$profile" "$profile_title"
 }
 
 handle_transform_failure() {
-    profile=$1
-    error_text=$(sanitize_error "${2:-}")
-    if [ -n "$error_text" ]; then
-        header="Transform with $(profile_label "$profile") failed:
+    transform_kind=$1
+    transform_value=$2
+    transform_title=$3
+    error_text=$(sanitize_error "${4:-}")
+    failed_selected_profile=
+
+    case "$transform_kind" in
+        profile)
+            failed_selected_profile=$transform_value
+            if [ -n "$error_text" ]; then
+                header="Transform with $transform_title failed:
 $error_text"
-    else
-        header="Transform with $(profile_label "$profile") failed: transform returned empty output"
-    fi
+            else
+                header="Transform with $transform_title failed: transform returned empty output"
+            fi
+            ;;
+        follow-up)
+            failed_selected_profile=${current_profile:-}
+            if [ -n "$error_text" ]; then
+                header="Follow-up instruction failed:
+$error_text"
+            else
+                header='Follow-up instruction failed: transform returned empty output'
+            fi
+            ;;
+        *)
+            failed_selected_profile=${current_profile:-}
+            header='Transform failed'
+            ;;
+    esac
 
     while :; do
         choice=$(failure_menu "$header")
         case "$choice" in
             Retry)
-                run_transform "$profile"
+                run_transform_command "$transform_kind" "$transform_value" "$transform_title"
                 return 0
                 ;;
             'Insert raw')
-                finish insert "$(read_file "$raw_file")" raw "$profile" "${current_profile:-}"
+                finish insert "$(read_file "$raw_file")" raw "$failed_selected_profile" "${current_profile:-}"
                 ;;
             'Copy raw')
-                finish copy "$(read_file "$raw_file")" raw "$profile" "${current_profile:-}"
+                finish copy "$(read_file "$raw_file")" raw "$failed_selected_profile" "${current_profile:-}"
                 ;;
             Cancel|'')
-                finish cancel "$(read_file "$candidate_file")" "$(candidate_state)" "$profile" "${current_profile:-}"
+                finish cancel "$(read_file "$candidate_file")" "$(candidate_state)" "$failed_selected_profile" "${current_profile:-}"
                 ;;
             *)
-                finish cancel "$(read_file "$candidate_file")" "$(candidate_state)" "$profile" "${current_profile:-}"
+                finish cancel "$(read_file "$candidate_file")" "$(candidate_state)" "$failed_selected_profile" "${current_profile:-}"
                 ;;
         esac
     done
@@ -387,6 +630,8 @@ main() {
     mkdir -p "$session_dir" || fail "unable to create session directory: $session_dir"
 
     read_current_profile
+    read_history_record_file
+    voxtype_history_purge_old_records
 
     while :; do
         choice=$(main_menu)
@@ -405,6 +650,20 @@ main() {
                 ;;
             'Transform as Code')
                 run_transform code
+                continue
+                ;;
+            'Recover recent dictation')
+                if record_file=$(choose_history_record); then
+                    recover_history_record "$record_file"
+                fi
+                continue
+                ;;
+            'Clear history')
+                if clear_history_confirmation; then
+                    voxtype_history_clear_all
+                    history_record_file=
+                    rm -f "$history_record_path_file" 2>/dev/null || true
+                fi
                 continue
                 ;;
             'Insert raw')
