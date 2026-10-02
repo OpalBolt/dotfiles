@@ -13,7 +13,7 @@ fzf --fish | source
 mise activate fish | source
 envoke shell-init --shell fish | source
 
-ensure_ssh_agent main-ssh work-ssh
+ensure_ssh_agent work-ssh
 
 # uv
 fish_add_path "/home/mads/.local/bin"
