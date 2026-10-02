@@ -43,7 +43,7 @@ enabled = false
 # List devices with: voxtype info devices
 # (or `arecord -L`). This takes an ALSA device name, not a PulseAudio
 # or PipeWire source name -- names from `pactl list sources` will not work.
-device = "default"
+device = "pipewire"
 #device = "alsa_input.usb-audio-technica____AT2020_USB-00.analog-stereo"
 
 # Sample rate in Hz (whisper expects 16000)
@@ -430,9 +430,9 @@ icon_theme = "emoji"
 # transcribing = "⏳"
 # stopped = ""
 
-# Dictation routes through one blocking interactive review workflow.
+# Type the raw transcript, then offer optional cleanup in a Foot window.
 [output.post_process]
 command = "/home/mads/.config/voxtype/scripts/post-process.sh"
 timeout_ms = 600000
-trim = true
+trim = false
 fallback_on_empty = false
