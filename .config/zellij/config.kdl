@@ -9,6 +9,8 @@ theme "matugen"
 pane_frames true                 // frames ON but unfocused ones are near-invisible (see
                                  // themes/kanagawa.kdl) → bright blue ring marks the focused pane
 
+support_kitty_keyboard_protocol false
+
 keybinds {
     shared_except "locked" {
         // Alt+1..9 → tab n. Positional (tabs renumber when one closes),
