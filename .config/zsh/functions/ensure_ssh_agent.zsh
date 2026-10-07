@@ -1,5 +1,4 @@
 # ensure_ssh_agent — start and populate the local SSH agent.
-# Port of fishold/functions/ensure_ssh_agent.fish; behavior preserved 1:1.
 # Usage: ensure_ssh_agent [-c|--clear] [key_name ...]
 ensure_ssh_agent() {
     emulate -L zsh
