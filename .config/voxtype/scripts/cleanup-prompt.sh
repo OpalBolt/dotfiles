@@ -3,7 +3,7 @@ set -eu
 
 choose() {
     if choice=$(printf '%s\n' "$1" |
-        fzf --no-sort --reverse --border --prompt="$2"); then
+        tv --no-sort --input-prompt="$2"); then
         return 0
     else
         status=$?

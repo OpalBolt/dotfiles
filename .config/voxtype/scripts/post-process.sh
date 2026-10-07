@@ -19,7 +19,7 @@ fail() {
     exit 1
 }
 
-for cmd in mmsg jq wtype foot fzf curl; do
+for cmd in mmsg jq wtype foot tv curl; do
     command -v "$cmd" >/dev/null 2>&1 || fail "missing $cmd"
 done
 
