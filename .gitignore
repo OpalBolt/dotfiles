@@ -1,5 +1,6 @@
 state.yml
 .config/nnn/plugins
+.config/zsh/.zplug
 .config/waybar/colors.css
 .config/mako/colors
 .config/wezterm/colors
