@@ -1,0 +1,1014 @@
+#compdef copilot
+
+autoload -U is-at-least
+
+_copilot() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C)
+    fi
+
+    local context curcontext="$curcontext" state line
+    _arguments "${_arguments_options[@]}" : \
+'-i+[Start interactive mode and automatically execute this prompt]:prompt:_default' \
+'--interactive=[Start interactive mode and automatically execute this prompt]:prompt:_default' \
+'-p+[Execute a prompt in non-interactive mode (exits after completion)]:text:_default' \
+'--prompt=[Execute a prompt in non-interactive mode (exits after completion)]:text:_default' \
+'--model=[Set the AI model to use (use '\''auto'\'' to let Copilot pick automatically)]:model:(auto claude-sonnet-5 claude-fable-5.1 claude-fable-5 claude-opus-5.5 claude-opus-5 claude-opus-4.8 claude-opus-4.8-fast claude-opus-4.7 claude-sonnet-4.6 claude-haiku-4.5 gpt-6.1-sol gpt-6-sol gpt-6-luna gpt-6-astra gpt-5.6-sol gpt-5.6-terra gpt-5.6-luna gpt-5.5 gpt-5.4 gpt-5.4-mini gpt-5.3-codex gpt-5-mini mai-code-1.1-flash gemini-3.8-flash gemini-3.7-flash gemini-3.6-flash gemini-3.5-flash grok-4.5 kimi-k3 kimi-k2.7-code claude-sonnet-5.5 grok-4.6)' \
+'--reasoning-effort=[Set the reasoning effort level]:level:(none minimal low medium high xhigh max)' \
+'--context=[Set the context window tier (overrides persisted setting)]:tier:(default long_context)' \
+'--auto-tier=[Set the Auto routing profile]:preference:(efficiency balance intelligence)' \
+'--agent=[Specify a custom agent to use]:agent:_default' \
+'(--continue)-r+[Resume from a previous session (optionally specify existing session ID, task ID, ID prefix, or name; name matching is exact, case-insensitive)]::value:_default' \
+'(--continue)--resume=[Resume from a previous session (optionally specify existing session ID, task ID, ID prefix, or name; name matching is exact, case-insensitive)]::value:_default' \
+'(-r --resume --continue --connect)-n+[Set a name for the new session]:name:_default' \
+'(-r --resume --continue --connect)--name=[Set a name for the new session]:name:_default' \
+'(-r --resume --continue --connect --cloud --server --headless --acp)--session-id=[Resume an existing session or task by ID, or set the UUID for a new session]:id:_default' \
+'(-r --resume --continue)--connect=[Connect directly to a remote session (optionally specify session ID or task ID)]::sessionId:_default' \
+'(-r --resume --continue --connect --cloud --session-id)-w+[Create or reuse an isolated git worktree and start the session inside it (name is optional; the location follows the worktreePathTemplate setting)]::name:_default' \
+'(-r --resume --continue --connect --cloud --session-id)--worktree=[Create or reuse an isolated git worktree and start the session inside it (name is optional; the location follows the worktreePathTemplate setting)]::name:_default' \
+'-C+[Change working directory before doing anything else]:directory:_default' \
+'--log-dir=[Set log file directory (default\: ~/.copilot/logs/)]:directory:_default' \
+'--extension-sdk-path=[Override the bundled @github/copilot-sdk injected into extension subprocesses with a local \`copilot-sdk/\` folder. Invalid paths fall back to the bundled SDK.]:directory:_default' \
+'--config-dir=[Set the configuration directory (default\: ~/.copilot). Deprecated\: use COPILOT_HOME env var instead.]:directory:_default' \
+'--log-level=[Set the log level]:level:(none error warning info debug all default)' \
+'--save-trajectory-output=[Save execution trajectory to specified file]:file:_default' \
+'--prefer-version=[Load a specific cached package version (used by /downgrade)]:version:_default' \
+'--stream=[Enable or disable streaming mode]:mode:(on off)' \
+'--output-format=[Output format\: '\''text'\'' (default) or '\''json'\'' (JSONL, one JSON object per line)]:format:(text json)' \
+'--share=[Share session to markdown file after completion in non-interactive mode (default\: ./copilot-session-<id>.md)]::path:_default' \
+'*--add-dir=[Allow file access to a directory and load its .github/skills and .github/agents as trusted configuration (can be used multiple times). A relative path resolves against the session working directory (the --resume/--worktree/-C directory), whatever order the options appear in]:directory:_default' \
+'*--attachment=[Attach a file (image or native document) to the initial prompt; only valid in non-interactive mode (can be used multiple times)]:path:_default' \
+'*--disable-mcp-server=[Disable a specific MCP server (can be used multiple times)]:server-name:_default' \
+'*--add-github-mcp-toolset=[Add a toolset to enable for the GitHub MCP server instead of the default CLI subset (can be used multiple times). Use "all" for all toolsets.]:toolset:_default' \
+'*--add-github-mcp-tool=[Add a tool to enable for the GitHub MCP server instead of the default CLI subset (can be used multiple times). Use "*" for all tools.]:tool:_default' \
+'*--plugin-dir=[Load a plugin from a local directory (can be used multiple times). A relative path resolves against the session working directory (the --resume/--worktree/-C directory), whatever order the options appear in]:directory:_default' \
+'*--additional-mcp-config=[Additional MCP servers configuration as JSON string or file path (prefix with @) (can be used multiple times; augments config from ~/.copilot/mcp-config.json for this session). A relative @ path resolves against the session working directory (the --resume/--worktree/-C directory) and a leading ~/ expands to your home directory]:json:_default' \
+'(--connect --cloud --relay --ahp --ahp-host)*--mcp-github-auth=[Send the signed-in GitHub account credential only to this explicit --additional-mcp-config server and approved origin. HTTPS is required except for literal loopback HTTP. Never put a token in this argument. Can be used multiple times.]:server=origin:_default' \
+'*--additional-content-exclusion-policies=[Additional content exclusion policies as JSON string or file path (prefix with @) (can be used multiple times)]:json:_default' \
+'*--allow-tool=[Tools the CLI has permission to use; will not prompt for permission]::tools:_default' \
+'*--deny-tool=[Tools the CLI does not have permission to use; will not prompt for permission]::tools:_default' \
+'*--available-tools=[Only these tools will be available to the model]::tools:_default' \
+'*--excluded-tools=[These tools will not be available to the model]::tools:_default' \
+'*--secret-env-vars=[Environment variable names whose values are stripped from shell and MCP server environments and redacted from output (e.g., --secret-env-vars=MY_KEY,OTHER_KEY)]::vars:_default' \
+'*--allow-url=[Allow access to specific URLs or domains]::urls:_default' \
+'*--deny-url=[Deny access to specific URLs or domains, takes precedence over --allow-url]::urls:_default' \
+'--max-autopilot-continues=[Maximum number of continuation messages in autopilot mode]:count:_default' \
+'(--autopilot)--mode=[Set the initial agent mode]:mode:(interactive plan autopilot)' \
+'--bash-env=[Enable BASH_ENV support for bash shells (on|off)]::value:_default' \
+'--mouse=[Enable mouse support in alt screen mode (on|off)]::value:_default' \
+'--host=[Host address to bind server to (default\: 127.0.0.1)]:host:_default' \
+'--port=[Port to listen on when in server mode (default\: random available port)]:port:_default' \
+'--session-idle-timeout=[Session idle timeout in seconds (0 = disabled)]:seconds:_default' \
+'--auth-token-env=[Read auth token from specified environment variable (for SDK use)]:var:_default' \
+'--collect-debug-logs=[Collect debug logs for a session and save to a .tgz file]:sessionId:_default' \
+'--collect-debug-logs-output=[Output path for --collect-debug-logs (default\: copilot-debug-logs-<sessionId>.tgz in cwd)]:path:_default' \
+'--ahp=[Experimental\: attach to an Agent Host Protocol host and run its sessions (default\: ws\://127.0.0.1\:8765)]::url:_default' \
+'--environment-id=[Target environment id for --relay]:id:_default' \
+'--listen=[Address --ahp-host binds, as host\:port]:address:_default' \
+'--workspace=[Workspace boundary for --ahp-host sessions]:directory:_default' \
+'*--dynamic-retrieval=[Enable or disable embeddings-based dynamic retrieval per category and persist the choice (category\: skills). Repeatable, e.g. --dynamic-retrieval skills=off]:category=on|off:_default' \
+'*--enable-mcp-server=[Enable an MCP server disabled in settings for this run only; nothing is persisted (can be used multiple times)]:server-name:_default' \
+'--max-ai-credits=[Set max AI credits for this session]:credits:_default' \
+'(--server --headless --acp --embedded-host)--usage-output-file=[Write final usage statistics as JSON to the specified file]:file:_default' \
+'-v[show version information]' \
+'--version[show version information]' \
+'--fleet[Run the prompt in fleet mode (parallel subagent orchestration); combine with -i, -p, or piped stdin]' \
+'-s[Output only the agent response (no stats), useful for scripting with -p]' \
+'--silent[Output only the agent response (no stats), useful for scripting with -p]' \
+'--enable-memory[Enable memory in prompt mode (disabled by default)]' \
+'--enable-reasoning-summaries[Deprecated compatibility flag (accepted but ignored)]' \
+'--continue[Resume the most recent session]' \
+'(-r --resume --continue --connect -n --name -i --interactive -p --prompt)--cloud[Create a cloud sandbox session and connect to it]' \
+'--allow-all-tools[Allow all tools to run automatically without confirmation; required for non-interactive mode. Run \`copilot help environment\` for what COPILOT_ALLOW_ALL accepts and what exact "true" grants]' \
+'--allow-all-paths[Disable file path verification and allow access to any path]' \
+'--disallow-temp-dir[Prevent automatic access to the system temporary directory]' \
+'--banner[Show the startup banner]' \
+'--screen-reader[Enable screen reader optimizations]' \
+'--plain-diff[Disable rich diff rendering (syntax highlighting via diff tool specified by git config)]' \
+'--share-gist[Share session to a secret GitHub gist after completion in non-interactive mode]' \
+'--disable-builtin-mcps[Disable all built-in MCP servers (currently\: github-mcp-server, githubiq)]' \
+'--enable-all-github-mcp-tools[Enable all GitHub MCP server tools instead of the default CLI subset. Overrides --add-github-mcp-toolset and --add-github-mcp-tool options.]' \
+'--allow-all-mcp-server-instructions[Include initialization instructions from all MCP servers in the system prompt instead of only allowlisted servers]' \
+'--allow-all-urls[Allow access to all URLs without confirmation]' \
+'--allow-all[Enable all permissions (equivalent to --allow-all-tools --allow-all-paths --allow-all-urls)]' \
+'--yolo[Enable all permissions (equivalent to --allow-all-tools --allow-all-paths --allow-all-urls)]' \
+'(--mode --plan)--autopilot[Start in autopilot mode]' \
+'(--autopilot)--plan[Start in plan mode (combine with --mode autopilot to auto-approve the plan and implement it autonomously)]' \
+'--experimental[Enable experimental features]' \
+'--show-timing[Show LLM turn duration timing information. For accurate tool timing, consider using --allow-all-tools to avoid confirmation delays.]' \
+'--server[Enable headless JSON-RPC server mode]' \
+'--ui-server[Enable TUI with embedded JSON-RPC server]' \
+'--headless[Enable headless JSON-RPC server mode (alias for --server)]' \
+'--managed-server[Bootstrap a managed-server session under headless --server so a controller'\''s attach picker can drive it]' \
+'--acp[Start as Agent Client Protocol server]' \
+'--stdio[Use stdio transport for server mode (instead of TCP)]' \
+'--disable-remote-sessions[Disable remote session access]' \
+'--remote[Enable remote control of your session from GitHub web and mobile]' \
+'--remote-export[Export your session to GitHub web and mobile (read-only; does not enable remote control)]' \
+'--log-interactive-shells[Log raw PTY data from interactive shell sessions]' \
+'--print-debug-info[Print CLI version, terminal capabilities, and detection-related env vars, then exit]' \
+'--relay[Experimental\: connect to a remote agent host via Mission Control + Web PubSub relay]' \
+'--ahp-host[Experimental\: serve AHP 0.9 with copilotd'\''s in-process backend]' \
+'--sandbox[Run this session'\''s shell commands inside the OS-level sandbox for this run only (does not change your saved sandbox setting)]' \
+'--assisted-approval[Review tool permission requests with the assisted-approval safety judge instead of approving them outright. Equivalent to the \`assisted\` mode of /permissions. Takes precedence over --allow-all-tools when the judge engages; requires --experimental or enabledFeatureFlags.AUTO_APPROVAL. (env\: COPILOT_ASSISTED_APPROVAL)]' \
+'--embedded-host[Run as an in-process FFI embedded host (Rust engine driven over the C ABI; no stdio/TCP transport)]' \
+'--no-custom-instructions[Disable loading of custom instructions from AGENTS.md and related files]' \
+'--no-auto-update[Disable downloading CLI updates automatically. Copilot then runs the version bundled in the executable you launched rather than a newer previously downloaded one]' \
+'--no-ask-user[Disable the ask_user tool (agent works autonomously without asking questions)]' \
+'--no-color[Disable all color output]' \
+'--no-experimental[Disable experimental features]' \
+'--no-bash-env[Disable BASH_ENV support for bash shells]' \
+'--no-mouse[Disable mouse support in alt screen mode]' \
+'--no-remote[Disable remote control of your session from GitHub web and mobile]' \
+'--no-remote-export[Disable exporting your session to GitHub web and mobile (also disables remote control)]' \
+'--no-auto-login[Disable automatic login detection (stored OAuth tokens and gh CLI)]' \
+'--no-sandbox[Disable the OS-level sandbox for this run only (does not change your saved sandbox setting)]' \
+'--no-eager-powershell-resolution[Disable background PowerShell prompt resolution on Windows]' \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_copilot_commands" \
+"*::: :->copilot" \
+&& ret=0
+    case $state in
+    (copilot)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-command-$line[1]:"
+        case $line[1] in
+            (app)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(login)
+_arguments "${_arguments_options[@]}" : \
+'--host=[GitHub host URL (default\: https\://github.com)]:host:_default' \
+'--config-dir=[Set the configuration directory (deprecated\: use COPILOT_HOME env var)]:directory:_default' \
+'(--web-flow)--device-code[Authenticate using the OAuth device code flow (default in remote or headless environments)]' \
+'(--device-code)--web-flow[Authenticate using the browser (web) flow (default on local desktops)]' \
+'(--device-code --web-flow)--with-token[Read an authentication token from standard input]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+'::topic -- Help topic (e.g., environment):_default' \
+&& ret=0
+;;
+(init)
+_arguments "${_arguments_options[@]}" : \
+'--sandbox[Run this session'\''s shell commands inside the OS-level sandbox for this run only (does not change your saved sandbox setting)]' \
+'--experimental[Enable experimental features]' \
+'--no-sandbox[Disable the OS-level sandbox for this run only (does not change your saved sandbox setting)]' \
+'--no-experimental[Disable experimental features]' \
+'--no-eager-powershell-resolution[Disable background PowerShell prompt resolution on Windows]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(update)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+'::channel -- update channel:(stable prerelease)' \
+&& ret=0
+;;
+(version)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(workflow)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__workflow_commands" \
+"*::: :->workflow" \
+&& ret=0
+
+    case $state in
+    (workflow)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-workflow-command-$line[1]:"
+        case $line[1] in
+            (run)
+_arguments "${_arguments_options[@]}" : \
+'--args=[Workflow arguments as inline JSON or an @-prefixed JSON file]:json|@path:_default' \
+'--result-file=[Write only the workflow result to this JSON file]:path:_default' \
+'--output-format=[Output format\: '\''text'\'' (default) or '\''json'\'' (JSONL)]:format:(text json)' \
+'-s[Suppress workflow progress output]' \
+'--silent[Suppress workflow progress output]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Registered dynamic workflow name:_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(sessions)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_copilot__subcmd__sessions_commands" \
+"*::: :->sessions" \
+&& ret=0
+
+    case $state in
+    (sessions)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-sessions-command-$line[1]:"
+        case $line[1] in
+            (import)
+_arguments "${_arguments_options[@]}" : \
+'--output=[Output format]:format:(json)' \
+'--working-directory=[Override the imported working directory]:path:_default' \
+'--name=[Override the imported session name]:name:_default' \
+'--dry-run[Validate without writing a session]' \
+'-h[Print help]' \
+'--help[Print help]' \
+':input_file -- Semantic session JSONL file:_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(memories)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_copilot__subcmd__memories_commands" \
+"*::: :->memories" \
+&& ret=0
+
+    case $state in
+    (memories)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-memories-command-$line[1]:"
+        case $line[1] in
+            (import)
+_arguments "${_arguments_options[@]}" : \
+'--output=[Output format]:format:(json)' \
+'--on-conflict=[Conflict behavior]:behavior:(skip error)' \
+'--dry-run[Validate without submitting memories]' \
+'-h[Print help]' \
+'--help[Print help]' \
+':input_file -- Semantic memory JSONL file:_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(plugin)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__plugin_commands" \
+"*::: :->plugin" \
+&& ret=0
+
+    case $state in
+    (plugin)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-plugin-command-$line[1]:"
+        case $line[1] in
+            (install)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':source -- Plugin source (plugin@marketplace, owner/repo,
+owner/repo\:path, or URL):_default' \
+&& ret=0
+;;
+(uninstall)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Plugin name (plugin-name or plugin-name@marketplace-name):_default' \
+&& ret=0
+;;
+(update)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--all[Update all installed plugins]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+'::name -- Plugin name (plugin-name@marketplace-name); omit when using
+--all:_default' \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(enable)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Plugin name, name@marketplace, or direct-install source id:_default' \
+&& ret=0
+;;
+(disable)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Plugin name, name@marketplace, or direct-install source id:_default' \
+&& ret=0
+;;
+(marketplace)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__plugin__subcmd__marketplace_commands" \
+"*::: :->marketplace" \
+&& ret=0
+
+    case $state in
+    (marketplace)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-plugin-marketplace-command-$line[1]:"
+        case $line[1] in
+            (add)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':source -- Marketplace source (owner/repo for GitHub, URL, or local
+path):_default' \
+&& ret=0
+;;
+(remove)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-f[Force removal even if plugins are installed]' \
+'--force[Force removal even if plugins are installed]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Marketplace name:_default' \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(browse)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Marketplace name:_default' \
+&& ret=0
+;;
+(update)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+'::name -- Marketplace name (omit to update all):_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(mcp)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__mcp_commands" \
+"*::: :->mcp" \
+&& ret=0
+
+    case $state in
+    (mcp)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-mcp-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(get)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'--show-secrets[Show full environment variable and header values (masked by default)]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Server name:_default' \
+&& ret=0
+;;
+(add)
+_arguments "${_arguments_options[@]}" : \
+'--transport=[Server transport]:transport:(stdio http sse)' \
+'*--env=[Environment variable (KEY=VALUE, can be repeated)]:env:_default' \
+'*--header=[HTTP header for remote servers, can be repeated]:header:_default' \
+'--tools=[Tool filter\: "*" for all, comma-separated list, or "" for none]:tools:_default' \
+'--timeout=[Timeout in milliseconds (1-4294967295)]:ms:_default' \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output added config as JSON]' \
+'--show-secrets[Show full environment variable and header values in output, masked by default]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Server name:_default' \
+'*::url_or_command_and_args -- URL for remote servers, or command and args for local
+servers (after --):_default' \
+&& ret=0
+;;
+(remove)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Server name:_default' \
+&& ret=0
+;;
+(enable)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- MCP server name:_default' \
+&& ret=0
+;;
+(disable)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- MCP server name:_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(skill)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__skill_commands" \
+"*::: :->skill" \
+&& ret=0
+
+    case $state in
+    (skill)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-skill-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(add)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--project[Install the skill into the project'\''s .github/skills directory]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':source -- Skill source (file path, URL, or directory):_default' \
+&& ret=0
+;;
+(remove)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name_or_directory -- Skill name or custom skill directory:_default' \
+&& ret=0
+;;
+(enable)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Skill name:_default' \
+&& ret=0
+;;
+(disable)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':name -- Skill name:_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(instruction)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__instruction_commands" \
+"*::: :->instruction" \
+&& ret=0
+
+    case $state in
+    (instruction)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-instruction-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(lsp)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__lsp_commands" \
+"*::: :->lsp" \
+&& ret=0
+
+    case $state in
+    (lsp)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-lsp-command-$line[1]:"
+        case $line[1] in
+            (list)
+_arguments "${_arguments_options[@]}" : \
+'--config-dir=[Path to the configuration directory (deprecated\: use COPILOT_HOME env var)]:path:_default' \
+'--json[Output as JSON]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(sandbox)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__sandbox_commands" \
+"*::: :->sandbox" \
+&& ret=0
+
+    case $state in
+    (sandbox)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-sandbox-command-$line[1]:"
+        case $line[1] in
+            (ca)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+":: :_copilot__subcmd__sandbox__subcmd__ca_commands" \
+"*::: :->ca" \
+&& ret=0
+
+    case $state in
+    (ca)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:copilot-sandbox-ca-command-$line[1]:"
+        case $line[1] in
+            (status)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(rotate)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(remove)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(create)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(trust)
+_arguments "${_arguments_options[@]}" : \
+'*--allow-host=[Also allow a host the certificate may be constrained to (can be used multiple times)]:host:_default' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+'::certificate_file -- Certificate file that `copilot sandbox ca create` printed
+(default\: your own):_default' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(taskbar-selftest)
+_arguments "${_arguments_options[@]}" : \
+'--strict[Exit non-zero unless tasks.json was actually written]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+&& ret=0
+;;
+(completion)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':shell -- Target shell:(bash zsh fish)' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+}
+
+(( $+functions[_copilot_commands] )) ||
+_copilot_commands() {
+    local commands; commands=(
+'app:Open the GitHub Copilot app' \
+'login:Authenticate with Copilot' \
+'help:Display help information' \
+'init:Initialize Copilot instructions' \
+'update:Download the latest version' \
+'version:Display version information' \
+'workflow:Run dynamic workflows' \
+'sessions:Manage saved sessions' \
+'memories:Manage memories' \
+'plugin:Manage plugins' \
+'mcp:Manage MCP servers' \
+'skill:Manage skills' \
+'instruction:Inspect instruction sources' \
+'lsp:Inspect language server configuration' \
+'sandbox:Manage command sandboxing' \
+'taskbar-selftest:Diagnose the Windows taskbar-presence (Forerunner) pipeline' \
+'completion:Generate a shell completion script' \
+    )
+    _describe -t commands 'copilot commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__app_commands] )) ||
+_copilot__subcmd__app_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot app commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__completion_commands] )) ||
+_copilot__subcmd__completion_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot completion commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__help_commands] )) ||
+_copilot__subcmd__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot help commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__init_commands] )) ||
+_copilot__subcmd__init_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot init commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__instruction_commands] )) ||
+_copilot__subcmd__instruction_commands() {
+    local commands; commands=(
+'list:List discovered instruction sources' \
+    )
+    _describe -t commands 'copilot instruction commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__instruction__subcmd__list_commands] )) ||
+_copilot__subcmd__instruction__subcmd__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot instruction list commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__login_commands] )) ||
+_copilot__subcmd__login_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot login commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__lsp_commands] )) ||
+_copilot__subcmd__lsp_commands() {
+    local commands; commands=(
+'list:List configured language servers' \
+    )
+    _describe -t commands 'copilot lsp commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__lsp__subcmd__list_commands] )) ||
+_copilot__subcmd__lsp__subcmd__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot lsp list commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp_commands] )) ||
+_copilot__subcmd__mcp_commands() {
+    local commands; commands=(
+'list:List configured MCP servers' \
+'get:Show server details' \
+'add:Add an MCP server' \
+'remove:Remove an MCP server' \
+'enable:Enable an MCP server' \
+'disable:Disable an MCP server' \
+    )
+    _describe -t commands 'copilot mcp commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp__subcmd__add_commands] )) ||
+_copilot__subcmd__mcp__subcmd__add_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot mcp add commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp__subcmd__disable_commands] )) ||
+_copilot__subcmd__mcp__subcmd__disable_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot mcp disable commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp__subcmd__enable_commands] )) ||
+_copilot__subcmd__mcp__subcmd__enable_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot mcp enable commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp__subcmd__get_commands] )) ||
+_copilot__subcmd__mcp__subcmd__get_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot mcp get commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp__subcmd__list_commands] )) ||
+_copilot__subcmd__mcp__subcmd__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot mcp list commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__mcp__subcmd__remove_commands] )) ||
+_copilot__subcmd__mcp__subcmd__remove_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot mcp remove commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__memories_commands] )) ||
+_copilot__subcmd__memories_commands() {
+    local commands; commands=(
+'import:Import semantic memories through the native memory service' \
+    )
+    _describe -t commands 'copilot memories commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__memories__subcmd__import_commands] )) ||
+_copilot__subcmd__memories__subcmd__import_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot memories import commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin_commands] )) ||
+_copilot__subcmd__plugin_commands() {
+    local commands; commands=(
+'install:Install a plugin' \
+'uninstall:Uninstall a plugin' \
+'update:Update a plugin' \
+'list:List installed and --plugin-dir plugins' \
+'enable:Enable a plugin' \
+'disable:Disable a plugin' \
+'marketplace:Manage plugin marketplaces' \
+    )
+    _describe -t commands 'copilot plugin commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__disable_commands] )) ||
+_copilot__subcmd__plugin__subcmd__disable_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin disable commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__enable_commands] )) ||
+_copilot__subcmd__plugin__subcmd__enable_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin enable commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__install_commands] )) ||
+_copilot__subcmd__plugin__subcmd__install_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin install commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__list_commands] )) ||
+_copilot__subcmd__plugin__subcmd__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin list commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__marketplace_commands] )) ||
+_copilot__subcmd__plugin__subcmd__marketplace_commands() {
+    local commands; commands=(
+'add:Add a marketplace' \
+'remove:Remove a marketplace' \
+'list:List registered marketplaces' \
+'browse:Browse plugins in a marketplace' \
+'update:Update marketplace plugin catalogs' \
+    )
+    _describe -t commands 'copilot plugin marketplace commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__marketplace__subcmd__add_commands] )) ||
+_copilot__subcmd__plugin__subcmd__marketplace__subcmd__add_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin marketplace add commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__marketplace__subcmd__browse_commands] )) ||
+_copilot__subcmd__plugin__subcmd__marketplace__subcmd__browse_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin marketplace browse commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__marketplace__subcmd__list_commands] )) ||
+_copilot__subcmd__plugin__subcmd__marketplace__subcmd__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin marketplace list commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__marketplace__subcmd__remove_commands] )) ||
+_copilot__subcmd__plugin__subcmd__marketplace__subcmd__remove_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin marketplace remove commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__marketplace__subcmd__update_commands] )) ||
+_copilot__subcmd__plugin__subcmd__marketplace__subcmd__update_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin marketplace update commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__uninstall_commands] )) ||
+_copilot__subcmd__plugin__subcmd__uninstall_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin uninstall commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__plugin__subcmd__update_commands] )) ||
+_copilot__subcmd__plugin__subcmd__update_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot plugin update commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox_commands] )) ||
+_copilot__subcmd__sandbox_commands() {
+    local commands; commands=(
+'ca:Manage the credential proxy certificate authority' \
+    )
+    _describe -t commands 'copilot sandbox commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox__subcmd__ca_commands] )) ||
+_copilot__subcmd__sandbox__subcmd__ca_commands() {
+    local commands; commands=(
+'status:Show whether the OS trusts the certificate authority' \
+'rotate:Replace the certificate authority' \
+'remove:Remove the certificate authority from OS trust' \
+'create:Create the certificate authority without trusting it' \
+'trust:Add the certificate authority to OS trust' \
+    )
+    _describe -t commands 'copilot sandbox ca commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox__subcmd__ca__subcmd__create_commands] )) ||
+_copilot__subcmd__sandbox__subcmd__ca__subcmd__create_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot sandbox ca create commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox__subcmd__ca__subcmd__remove_commands] )) ||
+_copilot__subcmd__sandbox__subcmd__ca__subcmd__remove_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot sandbox ca remove commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox__subcmd__ca__subcmd__rotate_commands] )) ||
+_copilot__subcmd__sandbox__subcmd__ca__subcmd__rotate_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot sandbox ca rotate commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox__subcmd__ca__subcmd__status_commands] )) ||
+_copilot__subcmd__sandbox__subcmd__ca__subcmd__status_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot sandbox ca status commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sandbox__subcmd__ca__subcmd__trust_commands] )) ||
+_copilot__subcmd__sandbox__subcmd__ca__subcmd__trust_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot sandbox ca trust commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sessions_commands] )) ||
+_copilot__subcmd__sessions_commands() {
+    local commands; commands=(
+'import:Import a semantic session from JSONL' \
+    )
+    _describe -t commands 'copilot sessions commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__sessions__subcmd__import_commands] )) ||
+_copilot__subcmd__sessions__subcmd__import_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot sessions import commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__skill_commands] )) ||
+_copilot__subcmd__skill_commands() {
+    local commands; commands=(
+'list:List available skills' \
+'add:Add a skill from a file, URL, or directory' \
+'remove:Remove a skill or custom skill directory' \
+'enable:Enable a skill' \
+'disable:Disable a skill' \
+    )
+    _describe -t commands 'copilot skill commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__skill__subcmd__add_commands] )) ||
+_copilot__subcmd__skill__subcmd__add_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot skill add commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__skill__subcmd__disable_commands] )) ||
+_copilot__subcmd__skill__subcmd__disable_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot skill disable commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__skill__subcmd__enable_commands] )) ||
+_copilot__subcmd__skill__subcmd__enable_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot skill enable commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__skill__subcmd__list_commands] )) ||
+_copilot__subcmd__skill__subcmd__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot skill list commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__skill__subcmd__remove_commands] )) ||
+_copilot__subcmd__skill__subcmd__remove_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot skill remove commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__taskbar-selftest_commands] )) ||
+_copilot__subcmd__taskbar-selftest_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot taskbar-selftest commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__update_commands] )) ||
+_copilot__subcmd__update_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot update commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__version_commands] )) ||
+_copilot__subcmd__version_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot version commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__workflow_commands] )) ||
+_copilot__subcmd__workflow_commands() {
+    local commands; commands=(
+'run:Run a registered dynamic workflow' \
+    )
+    _describe -t commands 'copilot workflow commands' commands "$@"
+}
+(( $+functions[_copilot__subcmd__workflow__subcmd__run_commands] )) ||
+_copilot__subcmd__workflow__subcmd__run_commands() {
+    local commands; commands=()
+    _describe -t commands 'copilot workflow run commands' commands "$@"
+}
+
+if [ "$funcstack[1]" = "_copilot" ]; then
+    _copilot "$@"
+else
+    compdef _copilot copilot
+fi
