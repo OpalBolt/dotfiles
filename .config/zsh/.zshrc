@@ -83,11 +83,11 @@ fi
 # envoke starts a watcher; zplug load must finish before it starts.
 (( $+commands[envoke] )) && eval "$(envoke shell-init --shell zsh)"
 
-# oh-my-zsh's lib/key-bindings.zsh (loaded above via zplug "lib/*") rebinds
-# ^R to the builtin history-incremental-search-backward, clobbering atuin's
-# own ^R widget set up earlier by `atuin init zsh`. Re-bind it here, after
-# zplug has finished loading, so atuin wins.
+# Esnure that atuin is loaded last to fix history search
 (( $+commands[atuin] )) && bindkey '^R' atuin-search
+
+# Load tj to provide us with Tmux app
+(( $+commands[tmux] )) && source ~/.config/tmux/tj.bash
 
 # --- functions -----------------------------------------------------------
 for _zj_fn in "$ZDOTDIR"/functions/*.zsh(N); do
