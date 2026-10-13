@@ -95,7 +95,7 @@ for _zj_fn in "$ZDOTDIR"/functions/*.zsh(N); do
 done
 unset _zj_fn
 
-ensure_ssh_agent work-ssh
+ensure_ssh_agent main-ssh work-ssh
 
 # --- fix for special characters -------------------------------------------
 zmodload zsh/terminfo

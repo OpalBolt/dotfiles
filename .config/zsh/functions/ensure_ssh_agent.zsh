@@ -1,5 +1,6 @@
 # ensure_ssh_agent — start and populate the local SSH agent.
 # Usage: ensure_ssh_agent [-c|--clear] [key_name ...]
+# Keys not found in Bitwarden are skipped with a notice.
 ensure_ssh_agent() {
     emulate -L zsh
     setopt local_options pipefail
@@ -41,7 +42,7 @@ ensure_ssh_agent() {
         rm -f -- "$SSH_AUTH_SOCK"
 
         local agent_output
-        agent_output="$(ssh-agent -a "$SSH_AUTH_SOCK" -c)"
+        agent_output="$(ssh-agent -a "$SSH_AUTH_SOCK")"
         if (( $? != 0 )); then
             print -u2 "Failed to start SSH agent."
             return 1
@@ -77,22 +78,15 @@ ensure_ssh_agent() {
             fi
         fi
 
-        local -a encoded_keys
-        encoded_keys=("${(@f)$(
+        local -a key_lines
+        key_lines=("${(@f)$(
             bw list items --session "$bw_session" \
-                | jq -er --args '
-                    . as $items
-                    | ($ARGS.positional | unique) as $names
-                    | [$items[] | select(.name as $name | $names | index($name))
-                       | select(.sshKey.privateKey? != null)
-                       | .name] | unique as $found
-                    | ($names - $found) as $missing
-                    | if $missing != [] then
-                        error("Missing SSH keys in Bitwarden: " + ($missing | join(", ")))
-                      else
-                        $items[] | select(.name as $name | $names | index($name))
-                        | .sshKey.privateKey | @base64
-                      end
+                | jq -r --args '
+                    ($ARGS.positional | unique) as $names
+                    | [.[] | select(.name as $name | $names | index($name))
+                       | select(.sshKey.privateKey? != null)]
+                    | unique_by(.name)[]
+                    | .name + "\t" + (.sshKey.privateKey | @base64)
                 ' "${key_names[@]}"
         )}")
         if (( $? != 0 )); then
@@ -100,13 +94,30 @@ ensure_ssh_agent() {
             return 1
         fi
 
-        local encoded_key
-        for encoded_key in "${encoded_keys[@]}"; do
-            printf '%s' "$encoded_key" | base64 --decode | ssh-add -t 12h -
-            if [[ "${pipestatus[*]}" != 0\ 0\ 0 ]]; then
-                print -u2 "Failed to load an SSH key from Bitwarden."
-                return 1
+        local -A loaded_keys
+        local -a loaded_names failed_names missing_names
+        local line key_name encoded_key
+        for line in "${key_lines[@]}"; do
+            key_name="${line%%$'\t'*}"
+            encoded_key="${line#*$'\t'}"
+            if printf '%s' "$encoded_key" | base64 --decode | ssh-add -t 12h -; then
+                loaded_keys[$key_name]=1
+                loaded_names+=("$key_name")
+            else
+                loaded_keys[$key_name]=2
+                failed_names+=("$key_name")
             fi
         done
+
+        local key
+        for key in "${(@u)key_names[@]}"; do
+            [[ -n "${loaded_keys[$key]}" ]] || missing_names+=("$key")
+        done
+
+        (( ${#loaded_names} )) && print "ensure_ssh_agent: loaded ${loaded_names[*]}"
+        (( ${#missing_names} )) && print "ensure_ssh_agent: skipped ${missing_names[*]} (not found in Bitwarden)"
+        (( ${#failed_names} )) && print -u2 "ensure_ssh_agent: failed to load ${failed_names[*]}"
+        (( ${#failed_names} )) && return 1
+        return 0
     fi
 }
