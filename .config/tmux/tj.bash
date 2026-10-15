@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tj - tmux workspace navigator (bash edition, Television as picker)
+# tj - tmux workspace navigator (bash edition, fzf as picker)
 # Use it in any shell:
 #   bash/zsh:  source /path/to/tj.bash     (zsh gets a small wrapper that runs it with bash)
 #   or run it directly:  chmod +x tj.bash && ln -s $PWD/tj.bash ~/.local/bin/tj
@@ -19,7 +19,7 @@ _tj_trunc()  { # str max
   if (( ${#1} > $2 )); then printf '%s…' "${1:0:$2-1}"; else printf '%s' "$1"; fi
 }
 
-# ---------- list: prints the aligned entries (tv's source command) ----------
+# ---------- list: prints the aligned entries (piped into fzf) ----------
 _tj_list() {
   local git=${TJ_GIT_DIR:-$HOME/git}
   local cust=${TJ_CUST_DIR:-$git/custproj}
@@ -95,37 +95,14 @@ _tj_preview() {
 
 # ---------- main ----------
 tj() {
-  command -v tv   >/dev/null || { echo "tj: tv not found" >&2; return 1; }
+  command -v fzf  >/dev/null || { echo "tj: fzf not found" >&2; return 1; }
   command -v tmux >/dev/null || { echo "tj: tmux not found" >&2; return 1; }
   [[ $(locale charmap 2>/dev/null) == UTF-8 ]] || echo "tj: warning: locale is not UTF-8" >&2
 
-  # export config so tv's child commands see the same settings
-  export TJ_GIT_DIR=${TJ_GIT_DIR:-$HOME/git}
-  export TJ_CUST_DIR=${TJ_CUST_DIR:-$TJ_GIT_DIR/custproj}
-  export TJ_PROJECTS_DIR=${TJ_PROJECTS_DIR:-$HOME/projects}
-  export TJ_COL1_MAX TJ_COL2_MAX
-
-  # one-off tv channel in a temp cable dir
-  local dir sel; dir=$(mktemp -d)
-  local nosort=false; [[ ${TJ_KEEP_ORDER:-1} == 1 ]] && nosort=true
-  cat > "$dir/tj.toml" <<TOML
-[metadata]
-name = "tj"
-description = "tmux workspace navigator"
-
-[source]
-command = "bash \"$TJ_SELF\" --list"
-no_sort = $nosort
-frecency = false
-
-[preview]
-command = "bash \"$TJ_SELF\" --preview '{}'"
-TOML
-
+  local sel args=(--preview "bash \"$TJ_SELF\" --preview {}")
+  [[ ${TJ_KEEP_ORDER:-1} == 1 ]] && args+=(--no-sort)
   # shellcheck disable=SC2086
-  sel=$(tv --cable-dir "$dir" ${TJ_TV_OPTS:-} tj)
-  rm -rf "$dir"
-  sel=${sel%%$'\n'*}
+  sel=$(_tj_list | fzf "${args[@]}" ${TJ_FZF_OPTS:-})
   [[ -z $sel ]] && return 0
 
   # act on column 3 only
@@ -151,7 +128,7 @@ TOML
   fi
 }
 
-# executed directly -> helper modes for tv, or run tj itself
+# executed directly -> helper modes for fzf, or run tj itself
 if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
   case $1 in
     --list)    _tj_list ;;
