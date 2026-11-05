@@ -7,14 +7,14 @@
     #gpgsign = true
 
 [core]
-    pager = delta
+    pager = "if command -v delta >/dev/null 2>&1; then delta; else less -FRX; fi"
     editor = nvim
 
 [color]
     ui = true
 
 [interactive]
-    diffFilter = delta --color-only --line-numbers
+    diffFilter = "if command -v delta >/dev/null 2>&1; then delta --color-only --line-numbers; else cat; fi"
 
 [include]
     path = ~/.config/git/deltatheme/themes.thTheme
@@ -74,7 +74,7 @@
 	defaultBranch = main
 [credential "https://github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/usr/bin/gh auth git-credential
+	helper = !gh auth git-credential

@@ -1,5 +1,0 @@
-# This file contains fish universal variable definitions.
-# VERSION: 3.0
-SETUVAR --export EDITOR:nvim
-SETUVAR --export VISIUAL:nvim
-SETUVAR fish_user_paths:/home/mads/\x2elocal/bin

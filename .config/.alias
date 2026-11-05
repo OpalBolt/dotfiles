@@ -1,6 +1,0 @@
-alias g='git'
-alias lg="lazygit"
-alias gs="git status"
-alias ipa="ip -br -c a && echo --- && ip -br -c l"
-alias stup="stow --restow -v --dir=$HOME/git --target=$HOME dotfiles"
-command -v nvim >/dev/null && alias vim='nvim' vi='nvim'

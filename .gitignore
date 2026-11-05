@@ -1,10 +1,15 @@
 state.yml
-.config/nnn/plugins
 .config/zsh/.zplug
+.config/zsh/.zshrc.local
+.config/tmux/plugins/
+.ssh/*
+!.ssh/authorized_keys
+!.ssh/config
+
+# generated desktop theme files live on the workstation only
 .config/waybar/colors.css
-.config/mako/colors
-.config/wezterm/colors
 .config/foot/foot-colors.ini
 .config/fuzzel/colors.ini
-/.config/matugen/generated/foot-colors.ini
-/.config/zellij/themes/matugen.kdl
+.config/wezterm/colors
+.config/matugen/generated
+.config/zellij/themes/matugen.kdl

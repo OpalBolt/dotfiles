@@ -10,8 +10,7 @@ path=("$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/.local/bin" $path)
 
 export EDITOR=nvim
 export VISUAL=nvim
-export READER=zathura
-export BROWSER=firefox
-export PAGER=bat
-export OLLAMA_IGPU_ENABLE=1
+# Debian ships bat as "batcat"; bootstrap.sh links it, but fall back to less.
+if command -v bat >/dev/null 2>&1; then export PAGER=bat; else export PAGER=less; fi
+export LESS='-R -F -i -M -X'
 export XDG_CONFIG_HOME="$HOME/.config"

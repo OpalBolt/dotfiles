@@ -1,0 +1,6 @@
+^/\.git
+^/readme\.md
+^/bootstrap\.sh
+^/docs
+^/\.gitignore
+^/\.stow-local-ignore

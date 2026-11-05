@@ -18,7 +18,6 @@ compinit
 (( $+commands[mise] )) && eval "$(mise activate zsh)"
 (( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow)"
 #(( $+commands[tv] )) && eval "$(tv init zsh)"
-(( $+commands[wt] )) && eval "$(wt config shell init zsh)"
 
 # lazy tab-completion for tools that generate their own script on the fly
 if (( $+commands[uv] )); then
@@ -48,7 +47,6 @@ if [[ -r "$ZPLUG_HOME/init.zsh" ]] && source "$ZPLUG_HOME/init.zsh"; then
     zplug "plugins/command-not-found", from:oh-my-zsh
     zplug "plugins/git", from:oh-my-zsh
     zplug "plugins/git-extras", from:oh-my-zsh
-    zplug "plugins/aws", from:oh-my-zsh
     zplug "plugins/docker", from:oh-my-zsh
     zplug "plugins/docker-compose", from:oh-my-zsh
 
@@ -56,7 +54,6 @@ if [[ -r "$ZPLUG_HOME/init.zsh" ]] && source "$ZPLUG_HOME/init.zsh"; then
     zplug "zsh-users/zsh-syntax-highlighting", from:github, as:plugin, defer:2
     zplug "MichaelAquilina/zsh-autoswitch-virtualenv", from:github, as:plugin
     zplug "djui/alias-tips", from:github, as:plugin
-    zplug "svenXY/timewarrior", from:github, as:plugin
 
     # Never prompt or install during shell startup. Install missing plugins
     # deliberately with `zplug install`, then start a new shell.
@@ -76,6 +73,14 @@ fi
 # Esnure that atuin is loaded last to fix history search
 (( $+commands[atuin] )) && bindkey '^R' atuin-search
 
+# fzf key bindings (Ctrl-T, Alt-C); Ctrl-R stays with atuin when present.
+# Debian ships the scripts under /usr/share/doc/fzf/examples.
+for _f in /usr/share/doc/fzf/examples/key-bindings.zsh /usr/share/fzf/key-bindings.zsh; do
+    [[ -r $_f ]] && { source "$_f"; break; }
+done
+unset _f
+(( $+commands[rg] )) && export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+
 # Load tj to provide us with Tmux app
 (( $+commands[tmux] )) && source ~/.config/tmux/tj.bash
 
@@ -85,7 +90,16 @@ for _zj_fn in "$ZDOTDIR"/functions/*.zsh(N); do
 done
 unset _zj_fn
 
-ensure_ssh_agent main-ssh work-ssh
+# Over SSH we rely on agent forwarding (see docs/ssh-agent-forwarding.md).
+# Keep a stable socket path so tmux panes survive reconnects.
+if [[ -n $SSH_CONNECTION ]]; then
+    if [[ -S $SSH_AUTH_SOCK && $SSH_AUTH_SOCK != "$HOME/.ssh/ssh_auth_sock" ]]; then
+        mkdir -p "$HOME/.ssh" && ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+        export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+    fi
+else
+    ensure_ssh_agent main-ssh work-ssh
+fi
 
 # --- fix for special characters -------------------------------------------
 zmodload zsh/terminfo
@@ -97,6 +111,17 @@ alias g=git
 alias lg=lazygit
 alias gs='git status'
 alias ipa='ip -br -c a && echo --- && ip -br -c l'
-alias stup="stow --restow -v --dir=$HOME/git --target=$HOME dotfiles"
+alias stup="$HOME/git/dotfiles/bootstrap.sh --stow-only"
 (( $+commands[nvim] )) && alias vim=nvim vi=nvim
 (( $+commands[eza] )) && alias ls='eza -mh1la --classify=always --icons=always --color=always --group-directories-first --git'
+
+# --- host-specific overrides (gitignored) -----------------------------------
+[[ -r $ZDOTDIR/.zshrc.local ]] && source "$ZDOTDIR/.zshrc.local"
+
+# --- auto-attach tmux on SSH login -------------------------------------------
+# "new-session -A" attaches to "main" if it exists, so logins never create
+# duplicates. Skip with NO_TMUX=1 ssh ... or by creating ~/.no-tmux.
+if [[ -n $SSH_CONNECTION && -z $TMUX && -z $NO_TMUX && ! -e ~/.no-tmux ]] \
+    && (( $+commands[tmux] )); then
+    exec tmux new-session -A -s main
+fi
