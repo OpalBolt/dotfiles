@@ -19,3 +19,6 @@ systemctl --user start voxtype.service
 # systemd-xdg-autostart-generator's unit for it never runs under mango.
 # Start it directly in the background instead.
 easyeffects --hide-window --service-mode &
+
+# Startup of Network Manager applet
+nm-applet
