@@ -1,38 +1,6 @@
-# ls (eza over ls, always -al)
-alias ls='eza -mh1la --classify=always --icons=always --color=always --group-directories-first --git'
-
-# editors (nvim over vim)
-alias vim='nvim'
-alias vi='nvim'
-
-# navigation (zoxide over cd)
-alias cd="z"
-
-# git
 alias g='git'
 alias lg="lazygit"
 alias gs="git status"
-
-# clipboard (xclip)
-alias c='xclip'
-alias v='xclip -o'
-alias cx='xclip -selection clipboard'
-
-# networking
-alias ping="prettyping --nolegend"
 alias ipa="ip -br -c a && echo --- && ip -br -c l"
-
-# kubernetes
-alias k="kubectl"
-alias knr="kubectl describe nodes |grep '^  Resource' -A3"
-
-# infrastructure / IaC
-alias terraform="tofu"
-alias gle='podman run --rm -v ${PWD}:/path docker.io/zricethezav/gitleaks:latest git --verbose /path'
-
-# system / dotfiles
-alias stup="stow --restow -v --dir=/home/$USER/git --target=/home/$USER dotfiles"
-alias dt="bash ~/scripts/date.sh"
-# Stolen from: https://github.com/zanderhavgaard/dotfiles/blob/master/.aliases
-alias sync_pacman_mirrors="reflector --country Denmark,Sweden,Norway,Germany --fastest 10 --protocol https --verbose"
-alias neofetch="fastfetch"
+alias stup="stow --restow -v --dir=$HOME/git --target=$HOME dotfiles"
+command -v nvim >/dev/null && alias vim='nvim' vi='nvim'

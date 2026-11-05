@@ -2,16 +2,6 @@
 
 [[ -o interactive ]] || return
 
-# Reset the kitty keyboard protocol before every prompt, in case a crashed
-# TUI left the terminal in "enhanced" mode. Ignored by terminals that don't
-# support it.
-_reset_kitty_keyboard_protocol() { print -n '\e[=0u' }
-precmd_functions+=(_reset_kitty_keyboard_protocol)
-
-if (( $+commands[fastfetch] )); then
-    fastfetch
-fi
-
 bindkey -e
 
 # --- completions -------------------------------------------------------
@@ -102,48 +92,11 @@ zmodload zsh/terminfo
 bindkey "${terminfo[kRIT5]:-^[[1;5C}" forward-word
 bindkey "${terminfo[kLFT5]:-^[[1;5D}" backward-word
 
-# --- aliases / abbreviations ----------------------------------------------
-# zsh has no fish-style `abbr` (visible expansion on space); these are plain
-# aliases, which run identically but won't rewrite the command line.
-alias ls='eza -mh1la --classify=always --icons=always --color=always --group-directories-first --git'
-
-alias vim=nvim
-alias vi=nvim
-
+# --- aliases ---------------------------------------------------------------
 alias g=git
 alias lg=lazygit
 alias gs='git status'
-
-# clipboard — wl-copy/wl-paste on Wayland, xclip on X11
-# c/v = PRIMARY selection (mouse), cx = CLIPBOARD (Ctrl+C/Y)
-if [[ -n "$WAYLAND_DISPLAY" ]]; then
-    alias c='wl-copy --primary'
-    alias v='wl-paste --primary'
-    alias cx=wl-copy
-else
-    alias c=xclip
-    alias v='xclip -o'
-    alias cx='xclip -selection clipboard'
-fi
-
-alias ping='prettyping --nolegend'
 alias ipa='ip -br -c a && echo --- && ip -br -c l'
-
-alias k=kubectl
-alias knr="kubectl describe nodes | grep '^  Resource' -A3"
-
-alias terraform=tofu
-alias gle='podman run --rm -v $PWD:/path docker.io/zricethezav/gitleaks:latest git --verbose /path'
-
-alias stup="stow --restow -v --dir=/home/$USER/git --target=/home/$USER dotfiles"
-alias dt='bash ~/scripts/date.sh'
-alias power-menu="$HOME/.config/fuzzel/scripts/power-menu.sh"
-alias wallpaper-menu="$HOME/.config/fuzzel/scripts/wallpaper-menu.sh"
-alias wallpaper-grid="$HOME/.config/fuzzel/scripts/wallpaper-grid-prototype.sh"
-alias wifi-menu="$HOME/.config/fuzzel/scripts/wifi-menu.sh"
-# Stolen from: https://github.com/zanderhavgaard/dotfiles/blob/master/.aliases
-alias sync_pacman_mirrors='reflector --country Denmark,Sweden,Norway,Germany --fastest 10 --protocol https --verbose'
-alias neofetch=fastfetch
-
-alias th=time-helper
-alias tw=timew
+alias stup="stow --restow -v --dir=$HOME/git --target=$HOME dotfiles"
+(( $+commands[nvim] )) && alias vim=nvim vi=nvim
+(( $+commands[eza] )) && alias ls='eza -mh1la --classify=always --icons=always --color=always --group-directories-first --git'

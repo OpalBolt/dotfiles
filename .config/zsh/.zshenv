@@ -11,7 +11,6 @@ path=("$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/.local/bin" $path)
 export EDITOR=nvim
 export VISUAL=nvim
 export READER=zathura
-export TERMINAL=foot
 export BROWSER=firefox
 export PAGER=bat
 export OLLAMA_IGPU_ENABLE=1
