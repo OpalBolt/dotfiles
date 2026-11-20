@@ -19,23 +19,20 @@ compile, clone, or source.
 # a) tmux plugin manager (XDG location this config expects)
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
-# b) tmux-sessionizer — make sure it's executable
-chmod +x ~/scripts/tmux-sessionizer.sh
-
-# c) start / reload tmux, then install plugins:
+# b) start / reload tmux, then install plugins:
 tmux source ~/.config/tmux/tmux.conf
 # inside tmux press:  prefix + I      (capital I = Install)
 ```
 
 ### Prerequisites
-- `tmux` (≥ 3.4; you have 3.7b) and `fzf` — present.
+- `tmux` (≥ 3.4; you have 3.7b) and `fzf` — present. Both `tj` and the
+  `prefix + f` popup need them; nothing else.
 - **A Nerd Font in your terminal** (kitty). The status bar icons are written as
   `\uXXXX` escapes (e.g. `\uf489` terminal, `\uf07b` folder, `\uefc5` memory,
   `\uf073`/`\uf017` date/clock, `\uf240` battery) so the config file itself stays
   pure ASCII. They need a Nerd Font to render — if you see boxes, set one in kitty.
-- `tmux-sessionizer.sh` at `~/scripts/`. **Verify that exact path** — it's
-  referenced once near the top of `tmux.conf` (`bind-key f …`). If your copy
-  lives elsewhere, edit that one line.
+- `prefix + f` runs **tj** (`.config/tmux/tj.bash`, also sourced by zsh).
+  The old `~/scripts/tmux-sessionizer.sh` is no longer wired in.
 
 ---
 
@@ -83,7 +80,7 @@ Prefix is the default **`Ctrl+b`**. (To change it, see §5.)
 ### Sessions & tools
 | Keys | Action |
 |---|---|
-| `prefix + f` | **tmux-sessionizer** popup (fuzzy-pick a project → session) |
+| `prefix + f` | **tj** popup — fuzzy-pick a session or a project dir; inside the picker: `Ctrl-x` kill, `Ctrl-r` rename, `Ctrl-p` prune all other sessions (with count confirm). The session you're in is protected. Preview shows live pane captures. |
 | `prefix + r` | reload this config |
 | `prefix + s` | list/switch sessions (tmux default) |
 | `prefix + d` | detach |

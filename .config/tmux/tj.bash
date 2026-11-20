@@ -76,9 +76,18 @@ _tj_preview() {
       found=1
       (( a > 0 )) && echo "Status: attached ($a client(s))" || echo "Status: detached"
       echo "Windows: $w"
-      tmux list-windows -t "=$name" -F \
-        '  #{window_index}: #{window_name}#{?window_active, *,} (#{window_panes} panes) #{pane_current_path}'
-      echo; echo "Attach: tmux attach -t $name"
+      # per window: header line, then a live capture of each pane's visible screen
+      # shortcut: 15 lines/pane caps tall screens; bump if previews feel short
+      while IFS= read -r wid; do
+        tmux display-message -p -t "$wid" \
+          '  #{window_index}: #{window_name}#{?window_active, *,} (#{window_panes} panes) #{pane_current_path}'
+        while IFS= read -r pid; do
+          tmux capture-pane -p -t "$pid" \
+            | sed -e 's/[[:space:]]*$//' -e '/^[[:space:]]*$/d' -e 's/^/    /' | head -n 15
+        done < <(tmux list-panes -t "$wid" -F '#{pane_id}')
+        echo
+      done < <(tmux list-windows -t "=$name" -F '#{window_id}' 2>/dev/null)
+      echo "Attach: tmux attach -t $name"
     done < <(tmux list-sessions -F '#{session_attached} #{session_windows} #{session_name}' 2>/dev/null)
     (( found )) || echo "Session '$name' is not running."
   else
@@ -93,6 +102,42 @@ _tj_preview() {
   fi
 }
 
+# ---------- row actions (bound to keys inside fzf; see tj) ----------
+_tj_target() { printf '%s' "${1##*"$SEP"}"; }
+_tj_own()    { [[ -n $TMUX ]] && tmux display-message -p '#{session_name}' 2>/dev/null; }
+
+_tj_kill() {   # selection line -> kill that session (no-op on directory rows)
+  local t name; t=$(_tj_target "$1")
+  [[ $t == session:* ]] || return 0
+  name=${t#session:}
+  [[ $name == "$(_tj_own)" ]] && return 0   # never kill the session we run in
+  tmux kill-session -t "=$name"
+}
+
+_tj_rename() { # selection line -> rename that session, prompt prefilled
+  local t name new; t=$(_tj_target "$1")
+  [[ $t == session:* ]] || return 0
+  name=${t#session:}
+  printf '\nrename to: '
+  IFS= read -e -i "$name" -r new </dev/tty || return 0
+  [[ -n $new ]] || return 0
+  tmux rename-session -t "=$name" "${new//[.:]/_}"
+}
+
+_tj_prune() {  # selection line -> kill every session except the highlighted one
+  local t keep own s ans victims=()
+  t=$(_tj_target "$1"); [[ $t == session:* ]] || return 0
+  keep=${t#session:}; own=$(_tj_own)
+  while IFS= read -r s; do
+    [[ -n $s && $s != "$keep" && $s != "$own" ]] && victims+=("$s")
+  done < <(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+  (( ${#victims[@]} )) || return 0
+  printf '\nkill %d session(s), keep "%s"? [y/N] ' "${#victims[@]}" "$keep"
+  IFS= read -r ans </dev/tty
+  [[ $ans == [yY] ]] || return 0
+  for s in "${victims[@]}"; do tmux kill-session -t "=$s"; done
+}
+
 # ---------- main ----------
 tj() {
   command -v fzf  >/dev/null || { echo "tj: fzf not found" >&2; return 1; }
@@ -100,6 +145,13 @@ tj() {
   [[ $(locale charmap 2>/dev/null) == UTF-8 ]] || echo "tj: warning: locale is not UTF-8" >&2
 
   local sel args=(--preview "bash \"$TJ_SELF\" --preview {}")
+  # picker keys (session rows only; directory rows ignore them)
+  args+=(
+    --header "ctrl-x kill · ctrl-r rename · ctrl-p prune others"
+    --bind "ctrl-x:execute-silent(bash \"$TJ_SELF\" --kill {})+reload(bash \"$TJ_SELF\" --list)"
+    --bind "ctrl-r:execute(bash \"$TJ_SELF\" --rename {})+reload(bash \"$TJ_SELF\" --list)"
+    --bind "ctrl-p:execute(bash \"$TJ_SELF\" --prune {})+reload(bash \"$TJ_SELF\" --list)"
+  )
   [[ ${TJ_KEEP_ORDER:-1} == 1 ]] && args+=(--no-sort)
   # shellcheck disable=SC2086
   sel=$(_tj_list | fzf "${args[@]}" ${TJ_FZF_OPTS:-})
@@ -133,6 +185,9 @@ if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
   case $1 in
     --list)    _tj_list ;;
     --preview) _tj_preview "$2" ;;
+    --kill)    _tj_kill "$2" ;;
+    --rename)  _tj_rename "$2" ;;
+    --prune)   _tj_prune "$2" ;;
     *)         tj "$@" ;;
   esac
 fi
