@@ -32,6 +32,9 @@ tmux source ~/.config/tmux/tmux.conf
   `\uf073`/`\uf017` date/clock, `\uf240` battery) so the config file itself stays
   pure ASCII. They need a Nerd Font to render — if you see boxes, set one in kitty.
 - `prefix + f` runs **tj** (`.config/tmux/tj.bash`, also sourced by zsh).
+  tj works for tmux **and** herdr: `TJ_BACKEND=tmux|herdr` forces one; otherwise
+  herdr env → herdr, `$TMUX` → tmux, plain shell → herdr (needs `jq`). Herdr config:
+  `.config/herdr/config.toml` (`alt+1..9` tabs, `prefix+f` → tj popup).
   The old `~/scripts/tmux-sessionizer.sh` is no longer wired in.
 
 ---

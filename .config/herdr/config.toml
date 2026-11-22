@@ -1,0 +1,14 @@
+onboarding = false
+
+[keys]
+# alt+1..9 jumps to tab N (same as tmux M-1..9); prefix+1..9 still works
+switch_tab = ["prefix+1..9", "alt+1..9"]
+
+# prefix+f -> tj picker (same key as tmux)
+[[keys.command]]
+key = "prefix+f"
+type = "popup"
+command = "bash ~/.config/tmux/tj.bash"
+description = "tj workspace picker"
+width = "70%"
+height = "70%"
