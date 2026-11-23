@@ -31,16 +31,16 @@ A coding agent CLI hag can launch inside a nono sandbox (pi, opencode, copilot, 
 _Avoid_: agent, tool
 
 **Agent kind**:
-Herdr's identifier for a harness, delivered through the HERDR_AGENT environment variable.
-_Avoid_: agent type, manifest
+Herdr's identifier for a harness, delivered through the HERDR*AGENT environment variable.
+\_Avoid*: agent type, manifest
 
 **nono profile**:
 The sandbox preset nono runs a harness under (`nono run -p …`).
 _Avoid_: sandbox config
 
 **Sandbox extras**:
-nono flags passed right of hag's `--` (`hag pi -- --allow /dir`); NONO_* env vars reach nono as well.
-_Avoid_: passthrough flags, parameters
+nono flags passed right of hag's `--` (`hag pi -- --allow /dir`); NONO*\* env vars reach nono as well.
+\_Avoid*: passthrough flags, parameters
 
 **Foreground process**:
 The pane's outermost process. Herdr reads its environ for the agent kind, so hag's own shell must hold this role for the whole session.

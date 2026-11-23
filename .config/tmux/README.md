@@ -7,7 +7,7 @@ ideas come from [binoymanoj/dotfiles](https://github.com/binoymanoj/dotfiles),
 structure and nvim-friendliness from the old OpalBolt config.
 
 **What's gone vs. before:** no `rose-pine` theme plugin, no
-`tmux-mem-cpu-load` binary, and no theme *plugin* at all — the bar is plain
+`tmux-mem-cpu-load` binary, and no theme _plugin_ at all — the bar is plain
 tmux options + shell calls (`free`, `date`, `cat`), so there's nothing extra to
 compile, clone, or source.
 
@@ -25,6 +25,7 @@ tmux source ~/.config/tmux/tmux.conf
 ```
 
 ### Prerequisites
+
 - `tmux` (≥ 3.4; you have 3.7b) and `fzf` — present. Both `tj` and the
   `prefix + f` popup need them; nothing else.
 - **A Nerd Font in your terminal** (kitty). The status bar icons are written as
@@ -41,14 +42,14 @@ tmux source ~/.config/tmux/tmux.conf
 
 ## 2. Plugins
 
-| Plugin | What it does |
-|---|---|
-| `tpm` | Plugin manager. `prefix + I` install, `prefix + U` update, `prefix + alt + u` remove. |
-| `tmux-sensible` | Defaults everyone agrees on: `escape-time 0`, `history-limit 50000`, `focus-events on`, etc. |
-| `tmux-pain-control` | All pane bindings (splits, navigate, resize). Replaces hand-written resize keys. |
-| `tmux-resurrect` | Save/restore whole tmux sessions across reboots. |
-| `tmux-continuum` | Auto-saves every 15 min; restores last session when tmux starts. |
-| `vim-tmux-navigator` *(optional)* | `Ctrl+h/j/k/l` moves seamlessly between nvim splits and tmux panes. Needs the matching nvim plugin. **Drop this line if you don't use it.** |
+| Plugin                            | What it does                                                                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tpm`                             | Plugin manager. `prefix + I` install, `prefix + U` update, `prefix + alt + u` remove.                                                       |
+| `tmux-sensible`                   | Defaults everyone agrees on: `escape-time 0`, `history-limit 50000`, `focus-events on`, etc.                                                |
+| `tmux-pain-control`               | All pane bindings (splits, navigate, resize). Replaces hand-written resize keys.                                                            |
+| `tmux-resurrect`                  | Save/restore whole tmux sessions across reboots.                                                                                            |
+| `tmux-continuum`                  | Auto-saves every 15 min; restores last session when tmux starts.                                                                            |
+| `vim-tmux-navigator` _(optional)_ | `Ctrl+h/j/k/l` moves seamlessly between nvim splits and tmux panes. Needs the matching nvim plugin. **Drop this line if you don't use it.** |
 
 ---
 
@@ -57,40 +58,44 @@ tmux source ~/.config/tmux/tmux.conf
 Prefix is the default **`Ctrl+b`**. (To change it, see §5.)
 
 ### Panes — provided by tmux-pain-control
-| Keys | Action |
-|---|---|
-| `prefix + \|` | split side-by-side (in current dir) |
-| `prefix + -`  | split top/bottom (in current dir) |
-| `prefix + \` / `_` | same splits, but full-width/height |
-| `prefix + h j k l` | move to pane left/down/up/right |
-| `prefix + Ctrl-h/j/k/l` | same, no release of Ctrl needed |
-| `prefix + H J K L` (shift) | resize that direction 5 cells (repeatable) |
-| `prefix + {` / `}` | swap pane with prev/next (tmux default) |
-| `prefix + !` | break pane into its own window (tmux default) |
-| `prefix + x` | kill pane (tmux default, asks for confirmation) |
-| `prefix + X` (shift) | kill pane **without** confirming |
+
+| Keys                       | Action                                          |
+| -------------------------- | ----------------------------------------------- |
+| `prefix + \|`              | split side-by-side (in current dir)             |
+| `prefix + -`               | split top/bottom (in current dir)               |
+| `prefix + \` / `_`         | same splits, but full-width/height              |
+| `prefix + h j k l`         | move to pane left/down/up/right                 |
+| `prefix + Ctrl-h/j/k/l`    | same, no release of Ctrl needed                 |
+| `prefix + H J K L` (shift) | resize that direction 5 cells (repeatable)      |
+| `prefix + {` / `}`         | swap pane with prev/next (tmux default)         |
+| `prefix + !`               | break pane into its own window (tmux default)   |
+| `prefix + x`               | kill pane (tmux default, asks for confirmation) |
+| `prefix + X` (shift)       | kill pane **without** confirming                |
 
 ### Windows
-| Keys | Action |
-|---|---|
-| `Alt + 1..9` | jump to window **N** (no prefix) |
-| `prefix + c` | new window |
-| `prefix + ,` | rename window |
-| `prefix + n` / `p` | next / previous window |
+
+| Keys               | Action                                  |
+| ------------------ | --------------------------------------- |
+| `Alt + 1..9`       | jump to window **N** (no prefix)        |
+| `prefix + c`       | new window                              |
+| `prefix + ,`       | rename window                           |
+| `prefix + n` / `p` | next / previous window                  |
 | `prefix + <` / `>` | swap window left / right (pain-control) |
-| `prefix + &` | kill window |
+| `prefix + &`       | kill window                             |
 
 ### Sessions & tools
-| Keys | Action |
-|---|---|
+
+| Keys         | Action                                                                                                                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `prefix + f` | **tj** popup — fuzzy-pick a session or a project dir; inside the picker: `Ctrl-x` kill, `Ctrl-r` rename, `Ctrl-p` prune all other sessions (with count confirm). The session you're in is protected. Preview shows live pane captures. |
-| `prefix + r` | reload this config |
-| `prefix + s` | list/switch sessions (tmux default) |
-| `prefix + d` | detach |
-| `prefix + R` | rename session (prompt prefilled with current name) |
-| `prefix + $` | rename session (tmux default, clears the name) |
+| `prefix + r` | reload this config                                                                                                                                                                                                                     |
+| `prefix + s` | list/switch sessions (tmux default)                                                                                                                                                                                                    |
+| `prefix + d` | detach                                                                                                                                                                                                                                 |
+| `prefix + R` | rename session (prompt prefilled with current name)                                                                                                                                                                                    |
+| `prefix + $` | rename session (tmux default, clears the name)                                                                                                                                                                                         |
 
 ### Copy mode (`prefix + [`)
+
 Vi keys: `v` select, `y` copy & exit, `r` rectangle-toggle, `q` exit. Mouse is
 on, so selection also works by drag.
 
@@ -125,7 +130,7 @@ To turn auto-restore off (some find it surprising), set
 - **Status bar palette** — colours live in the `set-environment -g …` block at
   the top of the status section. Default is **Catppuccin Mocha**. To switch,
   edit the six hex values, e.g. **Dracula**:
-  ```
+  ```text
   bg #282a36  active/accent #bd93f9  inactive #6272a4  text #f8f8f2  border #44475a
   ```
   …or the **Nordic** bg the old standalone binoymanoj config used: `bg #242933`.

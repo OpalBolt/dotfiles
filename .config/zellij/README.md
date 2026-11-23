@@ -1,6 +1,6 @@
 # zellij
 
-```
+```text
 ~/.config/zellij/
 ├── config.kdl        # kanagawa theme, focus frames, Alt+1..9, Ctrl+hjkl nav
 ├── themes/           # theme overrides (auto-loaded by zellij)
@@ -13,7 +13,7 @@
 ## Look
 
 - Theme: builtin **kanagawa** with a frame override in `themes/kanagawa.kdl`
-  (kitty actually runs the *dragon* variant — frame colors are dragon-tinted).
+  (kitty actually runs the _dragon_ variant — frame colors are dragon-tinted).
 - One-row compact tab bar at the **top**, nothing at the bottom. Pane frames
   are on, but unfocused frames are faint gray (`#434242` on dragon bg) and the
   **focused pane gets a bright blue frame + title** (`#7fb4ca`) — that's how
@@ -23,13 +23,13 @@
 
 ## Keys (on top of zellij defaults)
 
-| Action | Keys |
-|---|---|
-| Switch to tab 1–9 | `Alt+1` … `Alt+9` (positional; disabled in locked mode) |
-| Move between panes/tabs | `Ctrl+h/j/k/l` — seamless with nvim splits |
-| Everything else | zellij defaults: `Ctrl+p` pane mode, `Ctrl+t` tab mode, `Ctrl+g` locked |
+| Action                  | Keys                                                                    |
+| ----------------------- | ----------------------------------------------------------------------- |
+| Switch to tab 1–9       | `Alt+1` … `Alt+9` (positional; disabled in locked mode)                 |
+| Move between panes/tabs | `Ctrl+h/j/k/l` — seamless with nvim splits                              |
+| Everything else         | zellij defaults: `Ctrl+p` pane mode, `Ctrl+t` tab mode, `Ctrl+g` locked |
 
-Locked mode (`Ctrl+g`) passes *all* keys through — that's the escape hatch
+Locked mode (`Ctrl+g`) passes _all_ keys through — that's the escape hatch
 if a program inside needs Alt+digits or Ctrl+hjkl itself.
 
 ## nvim half of Ctrl+hjkl
@@ -54,12 +54,12 @@ in your nvim config, **remove vim-tmux-navigator** and add:
 
 ## Usage
 
-| Action | Command |
-|---|---|
-| Default session in `~/git` | `zellij` — or `zj` when nothing is running yet |
-| Fuzzy pick / switch sessions | `zj` |
-| Direct launch | `zj` → type `homelab` → enter |
-| Built-in session manager | `Ctrl+o` then `w` (inside zellij) |
+| Action                       | Command                                        |
+| ---------------------------- | ---------------------------------------------- |
+| Default session in `~/git`   | `zellij` — or `zj` when nothing is running yet |
+| Fuzzy pick / switch sessions | `zj`                                           |
+| Direct launch                | `zj` → type `homelab` → enter                  |
+| Built-in session manager     | `Ctrl+o` then `w` (inside zellij)              |
 
 ## Adding a project
 
@@ -80,8 +80,10 @@ Full reference: `zellij setup --dump-layout default`.
 Config dirs (`tmux/`, `sesh/`, `tmuxinator/`, `tmux-sessionizer/`) and
 `sesh.fish` are deleted. Remaining system-level cleanup:
 
-    sudo pacman -Rns tmux tmuxinator sesh   # or your package manager's equivalent
-    rm -rf ~/.tmux ~/.local/share/tmux-resurrect
+```sh
+sudo pacman -Rns tmux tmuxinator sesh   # or your package manager's equivalent
+rm -rf ~/.tmux ~/.local/share/tmux-resurrect
+```
 
 If muscle memory types `tmux` anyway, an alias helps:
 `alias tmux 'echo "it's zellij now — zj"'` (or just `alias tmux=zellij`).

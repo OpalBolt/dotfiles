@@ -5,51 +5,61 @@
 @import "colors.css";
 
 * {
-    font-size: 12px;
-    font-family: "ubuntu Nerd Font";
-    padding: 3px;
+  font-size: 12px;
+  font-family: "ubuntu Nerd Font";
+  padding: 3px;
 }
 
 window#waybar {
-    all: unset;
+  all: unset;
 }
 
 .modules-left {
-    margin: 10px 0px 0px 10px;
-    border-radius: 10px;
-    background: alpha(@surface, .6);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+  margin: 10px 0px 0px 10px;
+  border-radius: 10px;
+  background: alpha(@surface, 0.6);
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
 
 .modules-center {
-    margin: 10px 0px 0px 0px;
-    border-radius: 10px;
-    background: alpha(@surface, .6);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+  margin: 10px 0px 0px 0px;
+  border-radius: 10px;
+  background: alpha(@surface, 0.6);
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
 
 .modules-right {
-    margin: 12px 10px 0px 0px;
-    border-radius: 10px;
-    background: alpha(@surface, .6);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+  margin: 12px 10px 0px 0px;
+  border-radius: 10px;
+  background: alpha(@surface, 0.6);
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
 
-#block, #clock, #workspaces, #battery, #cpu, #memory, #wireplumber,
-#layout, #window, #language, #keymode, #bluetooth {
-    color: @on_surface;
+#block,
+#clock,
+#workspaces,
+#battery,
+#cpu,
+#memory,
+#wireplumber,
+#layout,
+#window,
+#language,
+#keymode,
+#bluetooth {
+  color: @on_surface;
 }
 
 /* Dim when the adapter is off, glow @primary when a device is connected -
    matches the "live state" treatment used for layout/keymode above. */
 #bluetooth.disabled,
 #bluetooth.off {
-    color: alpha(@on_surface, .3);
+  color: alpha(@on_surface, 0.3);
 }
 
 #bluetooth.connected {
-    color: @primary;
-    text-shadow: 0px 0px 5px alpha(@primary, .8);
+  color: @primary;
+  text-shadow: 0px 0px 5px alpha(@primary, 0.8);
 }
 
 /* mango/layout and mango/keymode surface the compositor's current mode
@@ -58,12 +68,12 @@ window#waybar {
    than static text. */
 #layout,
 #keymode {
-    color: @primary;
-    text-shadow: 0px 0px 5px alpha(@primary, .8);
+  color: @primary;
+  text-shadow: 0px 0px 5px alpha(@primary, 0.8);
 }
 
 #window {
-    color: alpha(@on_surface, .8);
+  color: alpha(@on_surface, 0.8);
 }
 
 /* mango/workspaces applies active / urgent / empty / current_output classes
@@ -74,38 +84,38 @@ window#waybar {
    glowing) - listed in that order so active/urgent can override empty when
    a viewed or urgent tag also happens to be empty. */
 #workspaces button {
-    all: unset;
-    padding: 0px 7px;
-    color: @on_surface;
+  all: unset;
+  padding: 0px 7px;
+  color: @on_surface;
 }
 
 #workspaces button.empty {
-    color: alpha(@on_surface, .3);
+  color: alpha(@on_surface, 0.3);
 }
 
 #workspaces button.active {
-    color: @primary;
-    text-shadow: 0px 0px 5px alpha(@primary, .8);
+  color: @primary;
+  text-shadow: 0px 0px 5px alpha(@primary, 0.8);
 }
 
 #workspaces button.urgent {
-    color: @error;
-    text-shadow: 0px 0px 5px alpha(@error, .8);
+  color: @error;
+  text-shadow: 0px 0px 5px alpha(@error, 0.8);
 }
 
 /* borrow semantic roles instead of hand-picked hex per module -
    charging gets its own accent, low/critical battery borrows @error */
 #battery.charging {
-    color: @tertiary;
+  color: @tertiary;
 }
 
 #mpris {
-    color: @on_surface;
+  color: @on_surface;
 }
 
 #mpris.paused,
 #mpris.stopped {
-    color: alpha(@on_surface, .5);
+  color: alpha(@on_surface, 0.5);
 }
 
 /* voxtype's state file drives one of four classes per status.rs: idle
@@ -114,47 +124,53 @@ window#waybar {
    borrowed from the battery-charging "in progress" accent), and stopped
    (daemon not running, dimmed like bluetooth.off/workspaces.empty). */
 #custom-voxtype.idle {
-    color: alpha(@on_surface, .6);
+  color: alpha(@on_surface, 0.6);
 }
 
 #custom-voxtype.recording {
-    color: @error;
-    text-shadow: 0px 0px 5px alpha(@error, .8);
-    animation: voxtype-pulse 1s ease-in-out infinite;
+  color: @error;
+  text-shadow: 0px 0px 5px alpha(@error, 0.8);
+  animation: voxtype-pulse 1s ease-in-out infinite;
 }
 
 #custom-voxtype.transcribing {
-    color: @tertiary;
-    text-shadow: 0px 0px 5px alpha(@tertiary, .8);
+  color: @tertiary;
+  text-shadow: 0px 0px 5px alpha(@tertiary, 0.8);
 }
 
 #custom-voxtype.stopped {
-    color: alpha(@on_surface, .3);
+  color: alpha(@on_surface, 0.3);
 }
 
 @keyframes voxtype-pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 #custom-notifications.paused {
-    color: @error;
-    text-shadow: 0px 0px 5px alpha(@error, .8);
+  color: @error;
+  text-shadow: 0px 0px 5px alpha(@error, 0.8);
 }
 
 #custom-notifications.active {
-    color: @on_surface;
+  color: @on_surface;
 }
 
 #custom-separator,
 #custom-bt-separator {
-    color: alpha(@on_surface, .3);
-    font-size: 14px;
-    padding: 0 2px;
+  color: alpha(@on_surface, 0.3);
+  font-size: 14px;
+  padding: 0 2px;
 }
 
 #battery.warning:not(.charging),
 #battery.critical:not(.charging) {
-    color: @error;
+  color: @error;
 }
