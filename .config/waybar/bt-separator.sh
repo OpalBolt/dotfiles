@@ -6,5 +6,5 @@
 # neutral #custom-separator styling instead of inheriting bluetooth's
 # @primary "connected" glow color.
 if [ -n "$(bluetoothctl devices Connected 2>/dev/null)" ]; then
-    echo "|"
+	echo "|"
 fi

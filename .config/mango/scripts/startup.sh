@@ -7,7 +7,7 @@
 # can't see them unless we hand them over explicitly. This must run before
 # anything below that depends on those variables.
 dbus-update-activation-environment --systemd \
-    WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE DISPLAY
+	WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE DISPLAY
 
 # graphical-session.target itself refuses manual starts (RefuseManualStart=yes),
 # so WantedBy=graphical-session.target units only come up when something

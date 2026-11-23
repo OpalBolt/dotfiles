@@ -24,43 +24,49 @@ set -u
 # vibe has no Herdr manifest yet (harmless; lights up when Herdr adds it)
 # and no dedicated nono profile, so it runs on the conservative default.
 registry=(
-    'pi|pi|pi|pi|🥧 Pi Coding Agent'
-    'opencode|opencode|opencode|opencode|💻 OpenCode'
-    'copilot|copilot|copilot|copilot|🤖 GitHub Copilot CLI'
-    'claude|claude|claude|claude|✨ Claude Code'
-    'vibe|vibe|default|vibe|🌊 Mistral Vibe (no Herdr manifest yet)'
+	'pi|pi|pi|pi|🥧 Pi Coding Agent'
+	'opencode|opencode|opencode|opencode|💻 OpenCode'
+	'copilot|copilot|copilot|copilot|🤖 GitHub Copilot CLI'
+	'claude|claude|claude|claude|✨ Claude Code'
+	'vibe|vibe|default|vibe|🌊 Mistral Vibe (no Herdr manifest yet)'
 )
 
 # Bare `hag`, or leading flags/`--` (`hag --resume`, `hag -- --allow /x`):
 # queue the args, pick the harness from the menu. A leading word that is
 # not a known harness still errors below — typos must not reach the menu.
 if [[ $# -eq 0 || $1 == -* ]]; then
-    command -v fzf >/dev/null || { echo 'hag: fzf not found' >&2; exit 1; }
-    choice=$(
-        # %-8s pads names by hand: fzf renders tabs as fixed spaces, not
-        # tab stops, so a raw \t leaves the label column ragged.
-        for line in "${registry[@]}"; do
-            printf '%-8s  %s\n' "${line%%|*}" "${line##*|}"
-        done | fzf --prompt='harness ❯ ' --pointer='▸' \
-            --header='agent args before -- · nono flags after -- · NONO_* env passes through' \
-            --height=35%
-    ) || exit $?
-    name=${choice%% *}
+	command -v fzf >/dev/null || {
+		echo 'hag: fzf not found' >&2
+		exit 1
+	}
+	choice=$(
+		# %-8s pads names by hand: fzf renders tabs as fixed spaces, not
+		# tab stops, so a raw \t leaves the label column ragged.
+		for line in "${registry[@]}"; do
+			printf '%-8s  %s\n' "${line%%|*}" "${line##*|}"
+		done | fzf --prompt='harness ❯ ' --pointer='▸' \
+			--header='agent args before -- · nono flags after -- · NONO_* env passes through' \
+			--height=35%
+	) || exit $?
+	name=${choice%% *}
 else
-    name=$1
-    shift
+	name=$1
+	shift
 fi
 
 line=''
 for l in "${registry[@]}"; do
-    [[ ${l%%|*} == "$name" ]] && { line=$l; break; }
+	[[ ${l%%|*} == "$name" ]] && {
+		line=$l
+		break
+	}
 done
 [[ -n $line ]] || {
-    names=${registry[*]%%|*}
-    echo "hag: unknown harness '$name' (expected one of: ${names// /, })" >&2
-    exit 1
+	names=${registry[*]%%|*}
+	echo "hag: unknown harness '$name' (expected one of: ${names// /, })" >&2
+	exit 1
 }
-IFS='|' read -r _ kind profile cmd _ <<< "$line"
+IFS='|' read -r _ kind profile cmd _ <<<"$line"
 
 # The first `--` belongs to hag: left of it reaches the harness verbatim,
 # right of it is spliced in as nono flags.
@@ -68,15 +74,21 @@ IFS='|' read -r _ kind profile cmd _ <<< "$line"
 # opt-out flag here if that ever matters.
 harness_args=() nono_flags=() split=0
 for a in "$@"; do
-    if (( !split )) && [[ $a == -- ]]; then split=1
-    elif (( split )); then nono_flags+=( "$a" )
-    else harness_args+=( "$a" )
-    fi
+	if ((! split)) && [[ $a == -- ]]; then
+		split=1
+	elif ((split)); then
+		nono_flags+=("$a")
+	else
+		harness_args+=("$a")
+	fi
 done
 
 # Resolve to a concrete path in the outer shell, so PATH differences inside
 # the sandbox can't matter.
-bin=$(command -v "$cmd") || { echo "hag: '$cmd' not found on PATH" >&2; exit 1; }
+bin=$(command -v "$cmd") || {
+	echo "hag: '$cmd' not found on PATH" >&2
+	exit 1
+}
 
 # No exec: this bash stays the pane's foreground process holding the hint.
 export HERDR_AGENT="$kind"

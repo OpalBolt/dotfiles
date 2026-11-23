@@ -219,7 +219,7 @@ function stream_no_video {
 		--demuxer-max-bytes=123400KiB \
 		--demuxer-readahead-secs=20 \
 		--no-video \
-		$1
+		"$1"
 }
 
 function stream_with_video {
@@ -228,26 +228,26 @@ function stream_with_video {
 		--cache=yes \
 		--demuxer-max-bytes=123400KiB \
 		--demuxer-readahead-secs=20 \
-		$1
+		"$1"
 }
 
 function get_video_title {
 	yt-dlp \
 		--skip-download \
 		--get-title \
-		$1
+		"$1"
 }
 
 function play_music {
 	echo -e "\n>>> Press q to skip to next video <<<\n"
-	shuffled=$(shuf -e $2)
+	shuffled=$(shuf -e "$2")
 	for url in $shuffled; do
 
 		# clear the screen
 		clear
 
 		# get the video title
-		video_title=$(get_video_title $url)
+		video_title=$(get_video_title "$url")
 
 		# print title and url
 		echo -e "Now playing ... ( $url )\n"
@@ -255,9 +255,11 @@ function play_music {
 		echo
 
 		# play music
+		# intentional fallback: if video playback fails, retry without video
+		# shellcheck disable=SC2015
 		[[ "$*" = *--show-video* ]] &&
-			stream_with_video $url ||
-			stream_no_video $url
+			stream_with_video "$url" ||
+			stream_no_video "$url"
 	done
 }
 

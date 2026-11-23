@@ -9,8 +9,8 @@ set -e
 #   ampm.sh "12:15am"  -> 00:15
 
 if [[ -z "$1" ]]; then
-    echo "Usage: $(basename "$0") <time, e.g. '9:30pm'>"
-    exit 1
+	echo "Usage: $(basename "$0") <time, e.g. '9:30pm'>"
+	exit 1
 fi
 
 INPUT="$*"

@@ -55,7 +55,6 @@ showsymbols=true
 showtext=true
 
 function check_valid {
-	option="$1"
 	shift 1
 	for entry in "${@}"; do
 		if [ -z "${actions[$entry]+x}" ]; then
@@ -66,8 +65,7 @@ function check_valid {
 }
 
 # Parse command-line options
-parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols,text,no-text,symbols-font: --name "$0" -- "$@")
-if [ $? -ne 0 ]; then
+if ! parsed=$(getopt --options=h --longoptions=help,dry-run,confirm:,choices:,choose:,symbols,no-symbols,text,no-text,symbols-font: --name "$0" -- "$@"); then
 	echo 'Terminating...' >&2
 	exit 1
 fi
@@ -164,7 +162,7 @@ while true; do
 	esac
 done
 
-if [ "$showsymbols" = "false" -a "$showtext" = "false" ]; then
+if [ "$showsymbols" = "false" ] && [ "$showtext" = "false" ]; then
 	echo "Invalid options: cannot have --no-symbols and --no-text enabled at the same time." >&2
 	exit 1
 fi
@@ -191,6 +189,8 @@ function write_message {
 }
 
 function print_selection {
+	# intentionally executes the echo built from the selection text
+	# shellcheck disable=SC2091
 	echo -e "$1" | $(
 		read -r -d '' entry
 		echo "echo $entry"
@@ -209,7 +209,7 @@ confirmationMessages[cancel]=$(write_message "${icons[cancel]}" "No, cancel")
 
 if [ $# -gt 0 ]; then
 	# If arguments given, use those as the selection
-	selection="${@}"
+	selection="${*}"
 else
 	# Otherwise, use the CLI passed choice if given
 	if [ -n "${selectionID+x}" ]; then

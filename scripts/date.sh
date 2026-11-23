@@ -3,13 +3,16 @@ set -e
 
 # Source other bash scripts
 MYDIR="$(dirname "$(realpath "$0")")"
-source $MYDIR/color.sh
+# color.sh lives next to this script and is checked separately; the pre-commit
+# hook runs without -x, so the source= directive cannot be followed
+# shellcheck disable=SC1091
+source "$MYDIR/color.sh"
 # takes a date and time, and returns the same moment in different time zones.
 
 Now=$(date "+%F %Z")
 NowDK=$(date +"%H:%M:%S")
 DateCmd='date +%a,%FT-%H:%M(%:z)%Z -d '
-DateStamp=${@:-$"Now"}
+DateStamp=${*:-"$Now"}
 
 echo -e "    LOCAL TIME:  ${GREEN}${BOLD}${NowDK}${NONE}"
 
