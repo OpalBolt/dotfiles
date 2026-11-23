@@ -31,8 +31,6 @@
       "custom/separator",
       "custom/notifications",
       "custom/separator",
-      "custom/voxtype",
-      "custom/separator",
       "custom/kernel",
       "custom/separator",
       "tray"
@@ -159,20 +157,6 @@
       "return-type": "json",
       "format": "{}",
       "tooltip": true
-    },
-    "custom/voxtype": {
-      "exec": "voxtype status --follow --format json --icon-theme nerd-font",
-      "return-type": "json",
-      "format": "{icon}",
-      "format-icons": {
-        "idle": "\uf130",
-        "recording": "\uf111",
-        "transcribing": "\uf110",
-        "stopped": "\uf131"
-      },
-      "tooltip": true,
-      "on-click": "$HOME/.config/voxtype/scripts/record-toggle.sh",
-      "on-click-right": "voxtype record cancel"
     },
     "custom/bt-separator": {
       "exec": "$HOME/.config/waybar/bt-separator.sh",
