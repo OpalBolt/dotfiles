@@ -8,3 +8,4 @@ state.yml
 .config/fuzzel/colors.ini
 /.config/matugen/generated/foot-colors.ini
 /.config/zellij/themes/matugen.kdl
+.scratch
