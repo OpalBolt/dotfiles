@@ -6,7 +6,7 @@
 # built-in dedup, so re-sourcing never produces duplicate entries)
 typeset -U path fpath
 
-path=("$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/.local/bin" $path)
+path=("$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/.local/bin" "$HOME/scripts" $path)
 
 export EDITOR=nvim
 export VISUAL=nvim

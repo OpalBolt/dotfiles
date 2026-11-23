@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# hag — launch a coding agent under nono, staying visible to Herdr's Agents panel.
+#
+# Herdr reads HERDR_AGENT from the pane's *foreground* process. Under plain
+# `nono run` the foreground process is nono's hardened supervisor, whose
+# /proc/<pid>/environ is unreadable, so the hint is lost (agent shows as
+# "unknown" and drops off the panel after ~30s). Fix: a plain outer shell
+# carries the hint and stays foreground for the whole session. The trailing
+# `exit $?` is load-bearing — without it sh exec-replaces itself with nono
+# and the hint disappears again. nono still owns all sandbox enforcement.
+# Refs: https://herdr.dev/tui/docs/agents/ and nolabs-ai/nono#2107
+
+set -u
+
+# harness -> Herdr agent kind | nono profile | command to run.
+# Kinds must match Herdr's supported list (herdr agent start --kind ...).
+# vibe has no Herdr manifest yet (harmless; lights up when Herdr adds it)
+# and no dedicated nono profile, so it runs on the conservative default.
+declare -A kind=( [pi]=pi [opencode]=opencode [copilot]=copilot [claude]=claude [vibe]=vibe )
+declare -A profile=( [pi]=pi [opencode]=opencode [copilot]=copilot [claude]=claude [vibe]=default )
+declare -A cmd=( [pi]=pi [opencode]=opencode [copilot]=copilot [claude]=claude [vibe]=vibe )
+
+if [[ $# -eq 0 ]]; then
+    command -v fzf >/dev/null || { echo 'hag: fzf not found' >&2; exit 1; }
+    choice=$(printf '%s\n' \
+        $'pi\tPi Coding Agent' \
+        $'opencode\tOpenCode' \
+        $'copilot\tGitHub Copilot CLI' \
+        $'claude\tClaude Code' \
+        $'vibe\tMistral Vibe (no Herdr manifest yet)' \
+        | fzf --prompt='harness> ' --height=35%) || exit $?
+    name=${choice%%$'\t'*}
+else
+    name=$1
+    shift
+fi
+
+[[ -n ${kind[$name]:-} ]] || {
+    echo "hag: unknown harness '$name' (expected one of: pi, opencode, copilot, claude, vibe)" >&2
+    exit 1
+}
+
+# Resolve to a concrete path in the outer shell, before entering the
+# sh -c sandwich, so PATH differences inside the sandbox can't matter.
+bin=$(command -v "${cmd[$name]}") || { echo "hag: '${cmd[$name]}' not found on PATH" >&2; exit 1; }
+
+# $0 slot = profile, "$@" = resolved binary + user args (passed verbatim,
+# exactly one evaluation boundary — never interpolate args into the string).
+exec env HERDR_AGENT="${kind[$name]}" \
+    sh -c 'nono run -p "$0" --allow-cwd -- "$@"; exit $?' \
+    "${profile[$name]}" "$bin" "$@"
