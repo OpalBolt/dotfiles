@@ -8,12 +8,16 @@
 #   hag pi --resume -- --allow /mnt/videos  # pi args left of --, nono flags right
 #   NONO_ALLOW=/x hag pi                    # nono env vars pass through too
 #
-# Herdr reads HERDR_AGENT from the pane's *foreground* process. Under plain
-# `nono run` the foreground process is nono's hardened supervisor, whose
-# /proc/<pid>/environ is unreadable, so the hint is lost (agent shows as
-# "unknown" and drops off the panel after ~30s). Fix: hag's own bash stays
-# foreground — no exec — running nono as a plain child while carrying the
-# hint in its (readable) environ. nono still owns all sandbox enforcement.
+# Herdr reads HERDR_AGENT from the pane's *foreground* process — from its
+# /proc/<pid>/environ, which is the snapshot taken at exec time. Under plain
+# `nono run` the foreground process is nono's hardened supervisor (environ
+# unreadable), and an `export` inside a wrapper bash never lands in that
+# snapshot either; either way the hint is lost (agent shows as "unknown" and
+# drops off the panel after ~30s). Fix: exec into `env HERDR_AGENT=… sh -c
+# '…; exit $?'` so a plain shell carries the hint from exec time and stays
+# foreground for the whole session. The trailing `exit $?` is load-bearing —
+# without it sh exec-replaces itself with nono and the hint disappears again.
+# nono still owns all sandbox enforcement.
 # Refs: https://herdr.dev/tui/docs/agents/ and nolabs-ai/nono#2107
 
 set -u
@@ -90,6 +94,10 @@ bin=$(command -v "$cmd") || {
 	exit 1
 }
 
-# No exec: this bash stays the pane's foreground process holding the hint.
-export HERDR_AGENT="$kind"
-nono run -p "$profile" --allow-cwd "${nono_flags[@]}" -- "$bin" "${harness_args[@]}"
+# exec, not export: herdr re-reads /proc/<pid>/environ on every probe, and
+# that file only holds vars present at exec time. Everything after -p is
+# flattened into one "$@": nono_flags, the separator, then bin + harness args.
+# shellcheck disable=SC2016 # $0/$@ must expand inside sh, not in hag's shell
+exec env HERDR_AGENT="$kind" \
+	sh -c 'nono run -p "$0" --allow-cwd "$@"; exit $?' \
+	"$profile" "${nono_flags[@]}" -- "$bin" "${harness_args[@]}"
