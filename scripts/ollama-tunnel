@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# ollama-tunnel — SSH into a remote server and let it reach this machine's Ollama.
+#
+# Usage: ollama-tunnel [--kill] [user@]host [ssh-args...]   (user defaults to your local user)
+#   ollama-tunnel 192.168.105.156          # shell + tunnel; tunnel dies on logout
+#   ollama-tunnel --kill 192.168.105.156   # kill a stale tunnel session left on the server
+#
+# On the remote server, apps use http://localhost:11434 (loopback only).
+# After this machine sleeps, the server's sshd may keep the dead session and
+# its port; the next login then warns "remote port forwarding failed".
+# Run --kill, then reconnect. ClientAliveInterval 30 in the server's
+# sshd_config makes sshd drop dead sessions on its own.
+set -euo pipefail
+
+PORT=11434
+
+if [[ ${1:-} == --kill ]]; then
+	shift
+	[[ $# -ge 1 ]] || {
+		echo "usage: ollama-tunnel --kill [user@]host" >&2
+		exit 2
+	}
+	# The sshd session holding the forward is the only process listening on PORT.
+	# shellcheck disable=SC2029 # PORT expands locally on purpose
+	exec ssh "$@" "pid=\$(ss -Htlnp 'sport = :$PORT' | grep -oP 'pid=\K\d+' | head -1); \
+		if [ -n \"\$pid\" ]; then kill \"\$pid\" && echo \"killed tunnel session \$pid\"; \
+		else echo 'no tunnel listening on $PORT'; fi"
+fi
+
+[[ $# -ge 1 ]] || {
+	sed -n '4,6p' "$0" >&2
+	exit 2
+}
+
+curl -sf "http://127.0.0.1:$PORT/api/tags" >/dev/null ||
+	echo "warning: Ollama is not answering on 127.0.0.1:$PORT here; tunnel opens anyway" >&2
+
+exec ssh -R "127.0.0.1:$PORT:127.0.0.1:$PORT" -o ServerAliveInterval=30 "$@"

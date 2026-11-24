@@ -45,3 +45,17 @@ nono flags passed right of hag's `--` (`hag pi -- --allow /dir`); NONO*\* env va
 **Foreground process**:
 The pane's outermost process. Herdr reads its environ for the agent kind, so hag's own shell must hold this role for the whole session.
 _Avoid_: parent shell, wrapper process
+
+## Language — Ollama tunnel
+
+**Inference host**:
+The computer with the GPU that runs Ollama on its own loopback and opens the SSH connection.
+_Avoid_: laptop, client, local machine
+
+**Remote server**:
+The machine the inference host SSHes into. Its apps reach Ollama at `localhost:11434`.
+_Avoid_: Pi, server, host
+
+**Ollama tunnel**:
+A reverse forward from the remote server's loopback port 11434 to the inference host's Ollama. It lives only as long as the interactive SSH session that opened it.
+_Avoid_: service, connection
