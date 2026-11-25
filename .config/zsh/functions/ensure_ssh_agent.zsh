@@ -37,7 +37,7 @@ ensure_ssh_agent() {
 	fi
 
 	# shellcheck disable=SC2154 # zsh $+commands[...] command-existence test, not a variable
-	if ! (($+commands[ssh - add])); then
+	if ! (($+commands[ssh-add])); then
 		print -u2 "Cannot initialize SSH agent: ssh-add is unavailable."
 		return 1
 	fi

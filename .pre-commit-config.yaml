@@ -24,6 +24,7 @@ repos:
         entry: shfmt --write
         language: system
         types: [shell]
+        exclude: '\.zsh(rc|env)?$' # bash-only: it mangles or refuses zsh
 
   - repo: local
     hooks:
