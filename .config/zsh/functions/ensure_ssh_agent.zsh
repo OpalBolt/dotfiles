@@ -1,5 +1,7 @@
 # ensure_ssh_agent — start and populate the local SSH agent.
-# Usage: ensure_ssh_agent [-c|--clear] [key_name ...]
+# Usage: ensure_ssh_agent [-c|--clear] [-f|--force] [key_name ...]
+# -f/--force: load keys even headless, and replace an already-set SSH_AUTH_SOCK
+# (e.g. a stale forward, or pushing from the server before forwarding is set up).
 # Keys not found in Bitwarden are skipped with a notice.
 # shellcheck shell=bash # shellcheck has no zsh mode; file is zsh, sourced by zsh (no shebang)
 # SC2296 fires only because zsh parameter flags like ${(@f)...} are not bash syntax.
@@ -8,11 +10,12 @@ ensure_ssh_agent() {
 	emulate -L zsh
 	setopt local_options pipefail
 
-	local clear=0
+	local clear=0 force=0
 	local -a key_names
 	while (($#)); do
 		case "$1" in
 		-c | --clear) clear=1 ;;
+		-f | --force) force=1 ;;
 		--)
 			shift
 			key_names+=("$@")
@@ -29,8 +32,14 @@ ensure_ssh_agent() {
 
 	[[ -o interactive ]] || return 0
 
-	# A forwarded or otherwise configured agent always takes precedence.
-	if [[ -n "$SSH_AUTH_SOCK" ]]; then
+	# Headless sessions (SSH, console) never load keys; the desktop's agent
+	# arrives via ForwardAgent. X11 forwarding sets DISPLAY=host:N — local seats are :N.
+	# --force overrides.
+	((force)) || [[ -n "$WAYLAND_DISPLAY" || "$DISPLAY" == :* ]] || return 0
+
+	# A forwarded or otherwise configured agent always takes precedence —
+	# unless forced: a forced run replaces even a (possibly stale) forwarded socket.
+	if ((!force)) && [[ -n "$SSH_AUTH_SOCK" ]]; then
 		((clear)) || return 0
 	else
 		export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"

@@ -35,4 +35,6 @@ fi
 curl -sf "http://127.0.0.1:$PORT/api/tags" >/dev/null ||
 	echo "warning: Ollama is not answering on 127.0.0.1:$PORT here; tunnel opens anyway" >&2
 
-exec ssh -R "127.0.0.1:$PORT:127.0.0.1:$PORT" -o ServerAliveInterval=30 "$@"
+# ForwardAgent: the inference host's agent (keys are loaded here, never on the server)
+# serves the remote server for the life of this session.
+exec ssh -R "127.0.0.1:$PORT:127.0.0.1:$PORT" -o ServerAliveInterval=30 -o ForwardAgent=yes "$@"
